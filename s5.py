@@ -1,4 +1,6 @@
 # Optimize strategy
+# Backtrader has bug, need to modify this file: D:\Python\Python310\lib\site-packages\backtrader\cerebro.py
+# Line 333, collections.Iterable -> collections.abc.Iterable
 
 import datetime  # For datetime objects
 

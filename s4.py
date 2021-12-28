@@ -1,4 +1,5 @@
 # Plot
+# Backtrader plot has bug, see: https://github.com/mementum/backtrader/pull/418/files
 
 import datetime  # For datetime objects
 
