@@ -138,4 +138,4 @@ if __name__ == '__main__':
   # 策略执行后的资金
   print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-  cerebro.plot()
+  cerebro.plot(style='candle', barup='red', bardown='green', plotdist=1, volume=False)
