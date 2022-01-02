@@ -13,9 +13,6 @@ class MA1Strategy(bt.Strategy):
     print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
-    # Keep a reference to the "close" line in the data[0] dataseries
-    self.dataclose = self.datas[0].close
-
     # To keep track of pending orders and buy price/commission
     self.order = None
 
@@ -31,19 +28,19 @@ class MA1Strategy(bt.Strategy):
     # Attention: broker could reject order if not enough cash
     if order.status in [order.Completed]:
       if order.isbuy():
-        # self.log('BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-        #     (order.executed.price,
-        #      order.executed.value,
-        #      order.executed.comm))
+        self.log('BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+            (order.executed.price,
+             order.executed.value,
+             order.executed.comm))
 
         self.buyprice = order.executed.price
         self.buycomm = order.executed.comm
       else:  # Sell
         pass
-        # self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
-        #          (order.executed.price,
-        #           order.executed.value,
-        #           order.executed.comm))
+        self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+                 (order.executed.price,
+                  order.executed.value,
+                  order.executed.comm))
     elif order.status in [order.Canceled, order.Margin, order.Rejected]:
       self.log('Order Canceled/Margin/Rejected')
 
@@ -61,33 +58,37 @@ class MA1Strategy(bt.Strategy):
     if self.order:
       return
 
+    close = self.datas[0].close
+    open = self.datas[0].open
     # Check if we are in the market
     if not self.position:
       # Not yet ... we MIGHT BUY if ...
-      if self.check_ma_direction() > 0 and self.dataclose[0] > self.sma[0]:
+      if self.check_ma_direction() > 0 and close[0] > self.sma[0]:
         # BUY, BUY, BUY!!! (with all possible default parameters)
 
         # Keep track of the created order to avoid a 2nd order
-        # self.log('BUY CREATE, %.2f' % self.dataclose[0])
-        self.order = self.buy()
+        self.log('BUY CREATE, %.2f' % close[0])
+        self.order = self.buy(exectype=bt.Order.Market)
     else:
-      if self.check_ma_direction() <= 0 and self.dataclose[0] < self.sma[0]:
+      if self.check_ma_direction() <= 0 and close[0] < self.sma[0]:
         # SELL, SELL, SELL!!! (with all possible default parameters)
-        # self.log('SELL CREATE, %.2f' % self.dataclose[0])
+        self.log('SELL CREATE, %.2f' % close[0])
         # Keep track of the created order to avoid a 2nd order
         self.order = self.sell()
 
   def check_ma_direction(self):
-    if self.sma[0] > self.sma[-1] * 1.001: # > self.sma[-2]  > self.sma[-3]:
+    if self.sma[0] > self.sma[-1] * 1.001 or self.sma[0] > self.sma[-1] > self.sma[-2]:
       return 1 # up
-    elif self.sma[0] * 1.001 < self.sma[-1]: # < self.sma[-2]  < self.sma[-3]:
+    elif self.sma[0] * 1.001  < self.sma[-1] or self.sma[0]  < self.sma[-1]  < self.sma[-2]:
       return -1 # down
     else:
       return 0 #
 
 if __name__ == '__main__':
-  cerebro = bt.Cerebro()
+  cerebro = bt.Cerebro(cheat_on_open=True)
   cerebro.broker.setcash(10000.0)
+  cerebro.broker.set_coo(True)
+  cerebro.broker.set_coc(True)
   # cerebro.broker.setcommission(0.0005)
   cerebro.addsizer(bt.sizers.AllInSizer)
   strats = cerebro.addstrategy(MA1Strategy)
@@ -102,8 +103,8 @@ if __name__ == '__main__':
       low=5,
       volume=6,
       dtformat=('%Y-%m-%d'),
-      fromdate=datetime.datetime(2018, 1, 1),
-      todate=datetime.datetime(2021, 1, 1)
+      fromdate=datetime.datetime(2015, 1, 1),
+      todate=datetime.datetime(2018, 1, 1)
   )
   # cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
   cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
