@@ -85,9 +85,8 @@ class MA1Strategy(bt.Strategy):
       return 0 #
 
 if __name__ == '__main__':
-  cerebro = bt.Cerebro(cheat_on_open=True)
+  cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
-  cerebro.broker.set_coo(True)
   cerebro.broker.set_coc(True)
   # cerebro.broker.setcommission(0.0005)
   cerebro.addsizer(bt.sizers.AllInSizer)
@@ -103,9 +102,10 @@ if __name__ == '__main__':
       low=5,
       volume=6,
       dtformat=('%Y-%m-%d'),
-      fromdate=datetime.datetime(2015, 1, 1),
-      todate=datetime.datetime(2018, 1, 1)
+      fromdate=datetime.datetime(2019, 1, 1),
+      todate=datetime.datetime(2020, 1, 1)
   )
+  # cerebro.adddata(data)
   # cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
   cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
 
