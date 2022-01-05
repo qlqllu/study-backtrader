@@ -6,7 +6,7 @@ class MA1Strategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
-    ('price_times', 3),
+    ('price_times', 1.5),
   )
 
   def log(self, txt, dt=None):
@@ -56,40 +56,54 @@ class MA1Strategy(bt.Strategy):
     self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
              (trade.pnl, trade.pnlcomm))
 
-  def start(self):
-    self.log('start')
+  # def start(self):
+  #   self.log('start')
 
   def prenext(self):
     if not self.startDate:
       self.startDate = self.data.datetime.date(0)
-    
-  
-  def nextstart(self):
-    self.log('nextstart')
+
+
+  # def nextstart(self):
+  #   self.log('nextstart')
 
   def next(self):
     # Check if an order is pending ... if yes, we cannot send a 2nd one
     if self.order:
       return
 
-    close = self.datas[0].close
     # Check if we are in the market
     if not self.position:
-      if self.check_low_price() and self.check_ma2_direction() > 0 and self.ma1[-1] < self.ma2[-1] and self.ma1[0] >= self.ma2[0]:
-        # self.log('BUY CREATE, %.2f' % close[0])
+      is_low, i = self.check_low_price()
+      if is_low and \
+        self.check_ma2_direction() > 0 and \
+        self.check_golden_cross() and \
+        self.data.close[0] > self.ma2[0]:
+        # buy 1
+        self.log('BUY CREATE, %.2f, Find high price at: %s, %.2f' % (self.data.close[0], self.data.datetime.date(0 - i).isoformat(), self.data.close[0 - i]))
         self.order = self.buy()
     else:
-      if self.ma1[-1] > self.ma2[-1] and self.ma1[0] <= self.ma2[0]:
+      if self.data.close[0] > self.ma1[0] and self.data.close[0] < self.data.open[0] and self.data.close[-1] < self.data.open[-1]:
+        # sell 1
+        self.order = self.sell()
+      elif self.ma1[-1] > self.ma2[-1] and self.ma1[0] <= self.ma2[0]:
+        # sell 2
         # self.log('SELL CREATE, %.2f' % close[0])
         self.order = self.sell()
 
   def check_ma2_direction(self):
-    if self.ma2[0] > self.ma2[-1] * 1.001 or self.ma2[0] > self.ma2[-1] > self.ma2[-2]:
+    if self.ma2[0] > self.ma2[-1] > self.ma2[-2]:
       return 1 # up
-    elif self.ma2[0] * 1.001  < self.ma2[-1] or self.ma2[0]  < self.ma2[-1]  < self.ma2[-2]:
+    elif self.ma2[0]  < self.ma2[-1]  < self.ma2[-2]:
       return -1 # down
     else:
       return 0 #
+
+  def check_golden_cross(self):
+    return self.ma1[0] >= self.ma2[0] and self.ma1[-1] < self.ma2[-1] or \
+      self.ma1[-1] >= self.ma2[-1] and self.ma1[-2] < self.ma2[-2] or \
+      self.ma1[-2] >= self.ma2[-2] and self.ma1[-3] < self.ma2[-3] or \
+      self.ma1[-3] >= self.ma2[-3] and self.ma1[-4] < self.ma2[-4]
 
   def check_low_price(self):
     close = self.data.close[0]
@@ -98,9 +112,9 @@ class MA1Strategy(bt.Strategy):
       i = i + 1
 
     if self.data.datetime.date(0 - i) > self.startDate:
-      return True
+      return True, i
     else:
-      return False
+      return False, 0
 
 
 if __name__ == '__main__':
@@ -124,9 +138,9 @@ if __name__ == '__main__':
       fromdate=datetime.datetime(2000, 1, 1),
       todate=datetime.datetime(2020, 1, 1)
   )
-  cerebro.adddata(data)
+  # cerebro.adddata(data)
   # cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
-  # cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
+  cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
 
   # 策略执行前的资金
   print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
