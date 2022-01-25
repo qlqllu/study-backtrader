@@ -73,13 +73,6 @@ class MA1Strategy(bt.Strategy):
     if self.order:
       return
 
-    if self.hasGoldenCross:
-      if self.is_dead_cross():
-        self.hasGoldenCross = False
-    else:
-      if self.is_golden_cross():
-        self.hasGoldenCross = True
-
     # Check if we are in the market
     if not self.position:
       # is_low, i = self.check_low_price()
@@ -109,7 +102,7 @@ class MA1Strategy(bt.Strategy):
 
   def is_golden_cross(self):
     return self.ma1[0] >= self.ma2[0] and self.ma1[-1] < self.ma2[-1]
-  
+
   def is_dead_cross(self):
     return self.ma1[0] < self.ma2[0] and self.ma1[-1] > self.ma2[-1]
 
