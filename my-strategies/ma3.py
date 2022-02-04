@@ -1,12 +1,14 @@
 # use MA cross to buy/sell
 import datetime
 import backtrader as bt
+from matplotlib.pyplot import subplot
+import pandas as pd
+import numpy as np
 
 class MA1Strategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
-    ('price_times', 1.5),
   )
 
   def log(self, txt, dt=None):
@@ -14,14 +16,22 @@ class MA1Strategy(bt.Strategy):
     print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
-    # To keep track of pending orders and buy price/commission
-    self.order = None
-    self.startDate = None
-    self.hasGoldenCross = None
+    self.buy_order = None
+    self.sell_order = None
 
     # Add a MovingAverageSimple indicator
-    self.ma1 = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.params.ma_period1)
-    self.ma2 = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.params.ma_period2)
+    self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
+    self.ma2 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period2)
+    # self.highest = bt.indicators.Highest(self.data, period=self.params.price_period, subplot=False)
+    self.isCrossUp = bt.indicators.CrossUp(self.ma1, self.ma2)
+
+    data = pd.read_csv(f'./up_stat_week.csv', index_col='id', dtype={'id': np.character})
+    self.stat = {
+      'low': data.low['000001'],
+      'middle': data.middle['000001'],
+      'high': data.high['000001']
+    }
+    pass
 
   def notify_order(self, order):
     if order.status in [order.Submitted, order.Accepted]:
@@ -48,8 +58,6 @@ class MA1Strategy(bt.Strategy):
     elif order.status in [order.Canceled, order.Margin, order.Rejected]:
       self.log('Order Canceled/Margin/Rejected')
 
-    self.order = None
-
   def notify_trade(self, trade):
     if not trade.isclosed:
       return
@@ -57,48 +65,43 @@ class MA1Strategy(bt.Strategy):
     self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
              (trade.pnl, trade.pnlcomm))
 
-  # def start(self):
-  #   self.log('start')
-
-  def prenext(self):
-    if not self.startDate:
-      self.startDate = self.data.datetime.date(0)
-
-
-  # def nextstart(self):
-  #   self.log('nextstart')
-
   def next(self):
-    # Check if an order is pending ... if yes, we cannot send a 2nd one
-    if self.order:
-      return
-
-    # Check if we are in the market
     if not self.position:
-      # is_low, i = self.check_low_price()
-
-      if self.check_ma_direction(self.ma2) > 0 and \
-        self.data.close[0] > self.ma2[0]:
+      if self.check_direction(self.ma2) > 0 and \
+        self.is_cross_up() and \
+        self.get_percentage(self.data.close[0], self.data.open[0]) >self.stat['middle']:
         # buy 1
         # self.log('BUY CREATE, %.2f, Find high price at: %s, %.2f' % (self.data.close[0], self.data.datetime.date(0 - i).isoformat(), self.data.close[0 - i]))
         self.log('BUY CREATE, %.2f' % (self.data.close[0]))
-        self.order = self.buy()
+        self.buy_order = self.buy()
     else:
-      if self.check_ma_direction(self.ma1) <= 0:
-        # sell 1
-        self.order = self.sell()
+      if not self.buy_order:
+        print('Error.')
+        return
+
+      if self.data.close[0] >= self.ma2[0] * (1 + self.stat['high'] * 3 / 100):
+        if self.get_percentage(self.data.close[0], self.data.open[0]) > self.stat['high'] \
+          or (self.get_percentage(self.data.close[0], self.data.open[0]) > self.stat['middle'] and self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['middle']):
+          # sell 1
+          self.sell_order = self.sell()
       elif self.is_dead_cross():
         # sell 2
         # self.log('SELL CREATE, %.2f' % close[0])
-        self.order = self.sell()
+        self.sell_order = self.sell()
 
-  def check_ma_direction(self, ma):
-    if ma[0] > ma[-1] > ma[-2]:
+  def check_direction(self, line):
+    if line[0] > line[-1]:
       return 1 # up
-    elif ma[0]  < ma[-1]  < ma[-2]:
+    elif line[0]  < line[-1]:
       return -1 # down
     else:
       return 0 #
+
+  def is_cross_up(self):
+    return self.isCrossUp[0] or self.isCrossUp[-1] or self.isCrossUp[-2]
+
+  def get_percentage(self, val1, val2):
+    return (val1 - val2)/val2 * 100
 
   def is_golden_cross(self):
     return self.ma1[0] >= self.ma2[0] and self.ma1[-1] < self.ma2[-1]
