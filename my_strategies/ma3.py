@@ -14,7 +14,7 @@ if __name__ == '__main__':
   strats = cerebro.addstrategy(MAStrategy)
 
   data = bt.feeds.GenericCSVData(
-      dataname='./stock_data/0.002739.csv',
+      dataname='./stock_data/0.000581.csv',
       datetime=1,
       open=2,
       close=3,

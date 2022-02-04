@@ -6,6 +6,8 @@ import os
 import seaborn as sns
 import matplotlib.pyplot as plt
 from ma.ma import MAStrategy
+import pandas as pd
+import numpy as np
 
 def test_one_stock(file):
   cerebro = bt.Cerebro()
@@ -43,17 +45,18 @@ if __name__ == '__main__':
   files = os.listdir('./stock_data')
   i = 0
   result = dict(stock_id=[], start_value=[], final_value=[], return_percent=[])
-
+  count = 0
   for file in files:
     stock_id = file.split('.')[1]
     if stock_id.startswith('3') or stock_id.startswith('4') or stock_id.startswith('8'):
       continue
 
     i += 1
-    # if i > 200:
-    #   continue
+    if i > 10:
+      count = i
+      continue
 
-    print('Test ' + stock_id)
+    print(f'Test {i}, {stock_id}')
 
     one_result = test_one_stock(file)
 
@@ -64,5 +67,15 @@ if __name__ == '__main__':
 
   resultData = pd.DataFrame(result)
   resultData.to_csv('./ma_test_result.csv')
+
+  # summary
+  sum = np.sum(resultData['return_percent'])
+  earn = round(len(np.extract(resultData['return_percent'] > 0, resultData['return_percent']))/count*100, 2)
+  loss = round(len(np.extract(resultData['return_percent'] < 0, resultData['return_percent']))/count*100, 2)
+
+  print('---------------------')
+  print(f'Sum return_percent: {sum}')
+  print(f'Earn: {earn}')
+  print(f'Loss: {loss}')
   sns.relplot(data=resultData, x='stock_id', y='return_percent')
   plt.show()

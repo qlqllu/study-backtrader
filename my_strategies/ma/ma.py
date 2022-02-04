@@ -6,11 +6,12 @@ class MAStrategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
+    ('price_period', 50)
   )
 
   def log(self, txt, dt=None):
     dt = dt or self.datas[0].datetime.date(0)
-    print('%s, %s' % (dt.isoformat(), txt))
+    # print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     self.buy_order = None
@@ -19,7 +20,7 @@ class MAStrategy(bt.Strategy):
     # Add a MovingAverageSimple indicator
     self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
     self.ma2 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period2)
-    # self.highest = bt.indicators.Highest(self.data, period=self.params.price_period, subplot=False)
+    self.highest = bt.indicators.Highest(self.data, period=self.params.price_period, subplot=False)
     self.isCrossUp = bt.indicators.CrossUp(self.ma1, self.ma2)
 
     data = pd.read_csv(f'./up_stat_week.csv', index_col='id', dtype={'id': np.character})
@@ -66,6 +67,7 @@ class MAStrategy(bt.Strategy):
     if not self.position:
       if self.check_direction(self.ma2) > 0 and \
         self.is_cross_up() and \
+        self.data.close[0] >= self.highest[0] and \
         self.get_percentage(self.data.close[0], self.data.open[0]) >self.stat['middle']:
         # buy 1
         # self.log('BUY CREATE, %.2f, Find high price at: %s, %.2f' % (self.data.close[0], self.data.datetime.date(0 - i).isoformat(), self.data.close[0 - i]))
