@@ -23,7 +23,7 @@ def statOneStock(file):
   diff = close - open
   diff = diff / open * 100
   pUp = np.extract(diff > 0, diff)
-  stat = np.quantile(pUp, [0.2, 0.5, 0.8])
+  stat = np.quantile(pUp, [0.2, 0.6, 0.9])
 
   return stat
 

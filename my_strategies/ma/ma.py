@@ -1,11 +1,8 @@
-# use MA cross to buy/sell
-import datetime
-import backtrader as bt
-from matplotlib.pyplot import subplot
 import pandas as pd
+import backtrader as bt
 import numpy as np
 
-class MA1Strategy(bt.Strategy):
+class MAStrategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
@@ -79,9 +76,10 @@ class MA1Strategy(bt.Strategy):
         print('Error.')
         return
 
-      if self.data.close[0] >= self.ma2[0] * (1 + self.stat['high'] * 3 / 100):
-        if self.get_percentage(self.data.close[0], self.data.open[0]) > self.stat['high'] \
-          or (self.get_percentage(self.data.close[0], self.data.open[0]) > self.stat['middle'] and self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['middle']):
+      if self.data.close[0] >= self.ma1[0] * (1 + self.stat['high'] * 2 / 100): # rise too fast
+        if self.data.close[0] < self.data.open[0] and \
+          (self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['high'] or \
+          (self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['middle'] and self.get_percentage(self.data.close[-2], self.data.open[-2]) > self.stat['middle'])):
           # sell 1
           self.sell_order = self.sell()
       elif self.is_dead_cross():
@@ -90,15 +88,15 @@ class MA1Strategy(bt.Strategy):
         self.sell_order = self.sell()
 
   def check_direction(self, line):
-    if line[0] > line[-1]:
+    if line[0] > line[-1] > line[-2]:
       return 1 # up
-    elif line[0]  < line[-1]:
+    elif line[0]  < line[-1] < line[-2]:
       return -1 # down
     else:
       return 0 #
 
   def is_cross_up(self):
-    return self.isCrossUp[0] or self.isCrossUp[-1] or self.isCrossUp[-2]
+    return self.isCrossUp[0] > 0 or self.isCrossUp[-1] > 0 or self.isCrossUp[-2] > 0
 
   def get_percentage(self, val1, val2):
     return (val1 - val2)/val2 * 100
@@ -119,39 +117,3 @@ class MA1Strategy(bt.Strategy):
       return True, i
     else:
       return False, 0
-
-
-if __name__ == '__main__':
-  cerebro = bt.Cerebro()
-  cerebro.broker.setcash(10000.0)
-  cerebro.broker.set_coc(True)
-  # cerebro.broker.setcommission(0.0005)
-  cerebro.addsizer(bt.sizers.AllInSizer)
-  strats = cerebro.addstrategy(MA1Strategy)
-
-  data = bt.feeds.GenericCSVData(
-      dataname='./stock_data/0.000001.csv',
-      name='000001',
-      datetime=1,
-      open=2,
-      close=3,
-      high=4,
-      low=5,
-      volume=6,
-      dtformat=('%Y-%m-%d'),
-      fromdate=datetime.datetime(2000, 1, 1),
-      todate=datetime.datetime(2020, 1, 1)
-  )
-  # cerebro.adddata(data)
-  # cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
-  cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
-
-  # 策略执行前的资金
-  print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
-
-  cerebro.run()
-
-  # 策略执行后的资金
-  print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
-
-  cerebro.plot(style='candle', barup='red', barupfill=False, bardown='green', plotdist=1, volume=False)
