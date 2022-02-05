@@ -11,7 +11,7 @@ class MAStrategy(bt.Strategy):
 
   def log(self, txt, dt=None):
     dt = dt or self.datas[0].datetime.date(0)
-    print('%s, %s' % (dt.isoformat(), txt))
+    # print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     self.buy_order = None
