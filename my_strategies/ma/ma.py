@@ -11,11 +11,12 @@ class MAStrategy(bt.Strategy):
 
   def log(self, txt, dt=None):
     dt = dt or self.datas[0].datetime.date(0)
-    # print('%s, %s' % (dt.isoformat(), txt))
+    print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     self.buy_order = None
     self.sell_order = None
+    self.trades = []
 
     # Add a MovingAverageSimple indicator
     self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
@@ -29,7 +30,6 @@ class MAStrategy(bt.Strategy):
       'middle': data.middle['000001'],
       'high': data.high['000001']
     }
-    pass
 
   def notify_order(self, order):
     if order.status in [order.Submitted, order.Accepted]:
@@ -60,6 +60,7 @@ class MAStrategy(bt.Strategy):
     if not trade.isclosed:
       return
 
+    self.trades.append(trade)
     self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
              (trade.pnl, trade.pnlcomm))
 

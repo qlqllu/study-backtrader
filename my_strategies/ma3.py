@@ -14,7 +14,7 @@ if __name__ == '__main__':
   strats = cerebro.addstrategy(MAStrategy)
 
   data = bt.feeds.GenericCSVData(
-      dataname='./stock_data/0.000516.csv',
+      dataname='./stock_data/0.000692.csv',
       datetime=1,
       open=2,
       close=3,
@@ -32,7 +32,9 @@ if __name__ == '__main__':
   # 策略执行前的资金
   print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
-  cerebro.run()
+  result = cerebro.run()
+
+  r1 = result[0]
 
   # 策略执行后的资金
   print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
