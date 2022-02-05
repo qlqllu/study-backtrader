@@ -52,12 +52,11 @@ if __name__ == '__main__':
       continue
 
     i += 1
-    if i > 10:
-      count = i
-      continue
+    # if i > 200:
+    #   continue
 
     print(f'Test {i}, {stock_id}')
-
+    count = i
     one_result = test_one_stock(file)
 
     result['stock_id'].append(stock_id)
