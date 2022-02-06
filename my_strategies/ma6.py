@@ -55,12 +55,12 @@ if __name__ == '__main__':
     if stock_id.startswith('3') or stock_id.startswith('4') or stock_id.startswith('8'):
       continue
 
+    if not stock_id in hs300:
+      continue
+
     i += 1
     # if i > 10:
     #   continue
-
-    if not stock_id in hs300:
-      continue
 
     print(f'Test {i}, {stock_id}')
     stock_count = i
