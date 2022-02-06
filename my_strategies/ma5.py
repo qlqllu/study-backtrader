@@ -48,8 +48,8 @@ if __name__ == '__main__':
       continue
 
     i += 1
-    if i > 100:
-      continue
+    # if i > 5:
+    #   continue
 
     print(f'Test {i}, {stock_id}')
     stock_count = i
@@ -69,12 +69,14 @@ if __name__ == '__main__':
   profit_avg = np.average(resultData['profit'])
   profit_per_week_avg = np.average(resultData['profit_per_week'])
   trade_count = len(resultData['profit'])
+  earn_trade_count = len(np.extract(resultData['profit'] > 0, resultData['profit']))
+  loss_trade_count = len(np.extract(resultData['profit'] < 0, resultData['profit']))
   max_earn = np.max(resultData['profit'])
   max_loss = np.min(resultData['profit'])
   total_cache_use = np.sum(resultData['weeks'])
 
   print('---------------------')
-  print(f'{stock_count} stocks, {trade_count} trades.')
+  print(f'{stock_count} stocks, {trade_count} trades. {earn_trade_count} earns, {loss_trade_count} losses')
   print(f'profit_sum: {profit_sum}')
   print(f'profit_avg: {profit_avg}')
   print(f'profit_per_week_avg: {profit_per_week_avg}')
