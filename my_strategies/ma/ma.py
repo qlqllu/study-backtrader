@@ -1,22 +1,25 @@
 import pandas as pd
 import backtrader as bt
 import numpy as np
+import math
 
 class MAStrategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
-    ('price_period', 50)
+    ('price_period', 30)
   )
 
   def log(self, txt, dt=None):
     dt = dt or self.datas[0].datetime.date(0)
-    # print('%s, %s' % (dt.isoformat(), txt))
+    print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     self.buy_order = None
     self.sell_order = None
     self.trades = []
+    self.dt = None
+    self.buy_price = None
 
     # Add a MovingAverageSimple indicator
     self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
@@ -44,10 +47,11 @@ class MAStrategy(bt.Strategy):
         #     (order.executed.price,
         #      order.executed.value,
         #      order.executed.comm))
-
-        self.buyprice = order.executed.price
-        self.buycomm = order.executed.comm
+        self.buy_price = order.executed.price
+        self.buy_order = None
+        pass
       else:  # Sell
+        self.sell_order = None
         pass
         # self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
         #          (order.executed.price,
@@ -65,44 +69,56 @@ class MAStrategy(bt.Strategy):
              (trade.pnl, trade.pnlcomm))
 
   def next(self):
-    if not self.position:
-      if self.check_direction(self.ma2) > 0 and \
-        self.is_cross_up() and \
-        self.data.close[0] >= self.highest[0] and \
-        self.get_percentage(self.data.close[0], self.data.open[0]) >self.stat['middle']:
-        # buy 1
-        # self.log('BUY CREATE, %.2f, Find high price at: %s, %.2f' % (self.data.close[0], self.data.datetime.date(0 - i).isoformat(), self.data.close[0 - i]))
-        self.log('BUY CREATE, %.2f' % (self.data.close[0]))
-        self.buy_order = self.buy()
-    else:
-      if not self.buy_order:
-        print('Error.')
-        return
+    self.dt = self.datas[0].datetime.date(0).isoformat()
 
-      if self.data.close[0] >= self.ma1[0] * (1 + self.stat['high'] * 2 / 100): # rise too fast
-        if self.data.close[0] < self.data.open[0] and \
-          (self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['high'] or \
-          (self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['middle'] and self.get_percentage(self.data.close[-2], self.data.open[-2]) > self.stat['middle'])):
-          # sell 1
-          self.sell_order = self.sell()
+    if not self.position:
+      if self.check_direction(self.ma2) > 0:
+        if self.is_cross_up() and \
+          self.data.close[0] >= self.highest[0] and \
+          self.data.close[0] > self.data.open[0] and \
+          self.get_percentage(self.data.close[0], self.data.open[0]) < self.stat['high'] and \
+          self.get_percentage(self.data.close[-1], self.data.open[-1]) < self.stat['high'] and \
+          self.get_percentage(self.data.close[-2], self.data.open[-2]) < self.stat['high']:
+          # buy 1
+          # self.log('BUY CREATE, %.2f, Find high price at: %s, %.2f' % (self.data.close[0], self.data.datetime.date(0 - i).isoformat(), self.data.close[0 - i]))
+          self.log('BUY CREATE1, %.2f' % (self.data.close[0]))
+          self.buy_order = self.buy()
+        # elif self.ma1[0] >= self.ma2[0] and \
+        #   self.data.close[0] > self.data.open[0] and \
+        #   self.data.close[0] > self.ma2[0] and self.data.low < self.ma2[0] and self.data.high[0] > self.ma1[0]:
+        #   # buy 2
+        #   self.log('BUY CREATE2, %.2f' % (self.data.close[0]))
+        #   self.buy_order = self.buy()
+    else:
+      if self.data.close[0] > self.buy_price * 2: # rise more then ..
+        if self.data.close[0] >= self.ma1[0] * (1 + self.stat['high'] / 100): # rise too fast
+          if self.data.close[0] < self.data.open[0] and \
+            (self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['high'] or \
+            (self.get_percentage(self.data.close[-1], self.data.open[-1]) > self.stat['middle'] and self.get_percentage(self.data.close[-2], self.data.open[-2]) > self.stat['middle']) or \
+            (self.get_percentage(self.data.close[-1], self.data.open[-1]) < self.stat['low'] and self.get_percentage(self.data.close[-2], self.data.open[-2]) > self.stat['middle'] and self.get_percentage(self.data.close[-3], self.data.open[-3]) > self.stat['middle'])):
+            # sell 1
+            self.log('SELL CREATE1, %.2f' % self.data.close[0])
+            self.sell_order = self.sell()
+            self.buy_price = None
       elif self.is_dead_cross():
         # sell 2
-        # self.log('SELL CREATE, %.2f' % close[0])
+        self.log('SELL CREATE2, %.2f' % self.data.close[0])
         self.sell_order = self.sell()
+        self.buy_price = None
 
   def check_direction(self, line):
-    if line[0] > line[-1] > line[-2]:
+    if line[0] > line[-1] > line[-2] > line[-3]:
       return 1 # up
-    elif line[0]  < line[-1] < line[-2]:
+    elif line[0]  < line[-1] < line[-2] < line[-3]:
       return -1 # down
     else:
       return 0 #
 
   def is_cross_up(self):
-    return self.isCrossUp[0] > 0 or self.isCrossUp[-1] > 0 or self.isCrossUp[-2] > 0
+    return self.isCrossUp[0] > 0 or self.isCrossUp[-1] > 0
 
-  def get_percentage(self, val1, val2):
-    return (val1 - val2)/val2 * 100
+  def get_percentage(self, val_h, val_l):
+    return (val_h - val_l)/val_l * 100
 
   def is_golden_cross(self):
     return self.ma1[0] >= self.ma2[0] and self.ma1[-1] < self.ma2[-1]

@@ -5,3 +5,13 @@ profit_per_week_avg: 5.47097623089983
 max_earn: 51980.77
 max_loss: -10543.25
 total_cache_use(weeks): 29029
+-----------------------------------------
+3130 stocks, 679 trades. 277 earns, 401 losses
+profit_sum: 2080867.1199999996
+profit_avg: 3064.605478645066
+trade_week_avg: 33.500736377025035
+profit_per_week_avg: 22.456303387334323
+profit_per_week_avg_2: 91.48
+max_earn: 42471.91
+max_loss: -7374.93
+total_cache_use(weeks): 22747
