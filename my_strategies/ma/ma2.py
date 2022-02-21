@@ -26,7 +26,7 @@ class MAStrategy(bt.Strategy):
     self.ma2 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period2)
     # self.highest = bt.indicators.Highest(self.data, period=self.params.price_period, subplot=False)
     self.isCrossUp = bt.indicators.CrossUp(self.ma1, self.ma2)
-    self.low_price = LowPriceIndicator(self.data)
+    self.low_price = LowPriceIndicator(self.data, subplot=False)
 
     data = pd.read_csv(f'./up_stat_week.csv', index_col='id', dtype={'id': np.character})
     self.stat = {
