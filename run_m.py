@@ -48,7 +48,7 @@ if __name__ == '__main__':
       continue
 
     i += 1
-    if i > 100:
+    if i > 50:
       continue
 
     print(f'Test {i}, {stock_id}')
@@ -62,7 +62,7 @@ if __name__ == '__main__':
       result['profit_per_week'].append(round(t.pnlcomm/t.barlen, 2))
 
   resultData = pd.DataFrame(result)
-  resultData.to_csv('./ma_test_result_trades.csv')
+  resultData.to_csv('./ma_test_result_trades-2.csv')
 
   # summary
   profit_sum = np.sum(resultData['profit'])

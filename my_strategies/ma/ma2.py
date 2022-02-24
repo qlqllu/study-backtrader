@@ -1,6 +1,7 @@
 import pandas as pd
 import backtrader as bt
 import numpy as np
+import datetime
 from my_strategies.indicators.low_price_indicator import LowPriceIndicator
 
 class MAStrategy(bt.Strategy):
@@ -20,13 +21,14 @@ class MAStrategy(bt.Strategy):
     self.trades = []
     self.dt = None
     self.buy_price = None
+    self.from_date = datetime.datetime(2010, 1, 1)
 
     # Add a MovingAverageSimple indicator
     self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
     self.ma2 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period2)
     # self.highest = bt.indicators.Highest(self.data, period=self.params.price_period, subplot=False)
     self.isCrossUp = bt.indicators.CrossUp(self.ma1, self.ma2)
-    self.low_price = LowPriceIndicator(self.data)
+    self.low_price = LowPriceIndicator(self.data, subplot=False)
 
     data = pd.read_csv(f'./up_stat_week.csv', index_col='id', dtype={'id': np.character})
     self.stat = {
@@ -71,11 +73,14 @@ class MAStrategy(bt.Strategy):
 
   def next(self):
     self.dt = self.datas[0].datetime.date(0).isoformat()
+    
+    # if self.datas[0].datetime.date(0) < self.from_date.date():
+    #   return
 
     if not self.position:
       if self.check_direction(self.ma2) > 0:
         if self.is_cross_up() and \
-          self.data.close[0] >= self.low_price[0] and \
+          self.data.close[0] <= self.low_price[0] and \
           self.data.close[0] > self.data.open[0] and \
           self.get_percentage(self.data.close[0], self.data.open[0]) < self.stat['high'] and \
           self.get_percentage(self.data.close[-1], self.data.open[-1]) < self.stat['high'] and \
