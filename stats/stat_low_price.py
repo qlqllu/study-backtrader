@@ -36,12 +36,12 @@ if __name__ == '__main__':
       continue
 
     close = np.array(data.close)
-    low_price = np.max(close) * 0.2
-    if low_price >= close[-1]:
+    highest = np.max(close)
+    if highest * 0.3 <= close[-1] < highest * 0.5:
       result['id'].append(stock_id)
       result['name'].append(stock_name)
 
   resultData = pd.DataFrame(result)
-  resultData.to_csv('./low_price.csv')
+  resultData.to_csv('./low_price_3.csv')
   plt.show()
 
