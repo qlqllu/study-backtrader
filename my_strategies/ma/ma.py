@@ -2,6 +2,7 @@ import pandas as pd
 import backtrader as bt
 import numpy as np
 import math
+import datetime
 
 class MAStrategy(bt.Strategy):
   params = (
@@ -20,6 +21,7 @@ class MAStrategy(bt.Strategy):
     self.trades = []
     self.dt = None
     self.buy_price = None
+    self.from_date = datetime.date.today() - datetime.timedelta(1)
 
     # Add a MovingAverageSimple indicator
     self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
@@ -69,7 +71,10 @@ class MAStrategy(bt.Strategy):
              (trade.pnl, trade.pnlcomm))
 
   def next(self):
-    self.dt = self.datas[0].datetime.date(0).isoformat()
+    self.dt = self.data.datetime.date(0).isoformat()
+
+    if self.data.datetime.date(0) < self.from_date:
+      return
 
     if not self.position:
       if self.check_direction(self.ma2) > 0:
