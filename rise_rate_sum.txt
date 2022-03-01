@@ -1,0 +1,7 @@
+Simple cross:
+
+Rise rate avg: 56.56
+Rise rate 258: 0.0, 8.5, 69.83
+----------------
+Down up avg: 7.38
+Down up 258: -19.39, -8.74, 11.58
