@@ -7,7 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from rise_rate import FindRiseRateStrategy
+from rise_rate_line_direction import FindRiseRateStrategy
 
 # data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
 data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
@@ -53,7 +53,7 @@ if __name__ == '__main__':
       continue
 
     i += 1
-    # if i > 100:
+    # if i > 10:
     #   continue
 
     print(f'Test {i}, {stock_id}')
@@ -62,13 +62,16 @@ if __name__ == '__main__':
     all_crosses += crosses
 
   resultData = pd.DataFrame(all_crosses)
-  resultData.to_csv('./rise_rate_all.csv')
+  resultData.to_csv('./rise_rate_all_line_direction.csv')
 
   print('----------------')
   rise_avg = round(np.average(resultData['rise_rate%']), 2)
   rise_q258 = np.quantile(resultData['rise_rate%'], [0.2, 0.5, 0.8])
   rise_q258 = list(map(lambda x: round(x, 2), rise_q258))
   rise_data = sorted(list(map(lambda x: round(x, 2), resultData['rise_rate%'])))
+
+  count = len(resultData['rise_rate%'])
+  print(f'Count: {count}')
 
   print(f'Rise rate avg: {rise_avg}')
   print(f'Rise rate 258: {rise_q258[0]}, {rise_q258[1]}, {rise_q258[2]}')

@@ -17,7 +17,7 @@ if __name__ == '__main__':
   data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
 
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}002625.csv',
+      dataname=f'{data_folder}600870.csv',
       datetime=1,
       open=2,
       close=3,
