@@ -8,7 +8,8 @@ class MAStrategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
-    ('price_period', 30)
+    ('price_period', 30),
+    ('stock_id', None)
   )
 
   def log(self, txt, dt=None):
@@ -30,10 +31,15 @@ class MAStrategy(bt.Strategy):
     self.isCrossUp = bt.indicators.CrossUp(self.ma1, self.ma2)
 
     data = pd.read_csv(f'./up_stat_week.csv', index_col='id', dtype={'id': np.character})
+
+    stock_id = self.p.stock_id
+    if not stock_id in data.index.values:
+      stock_id = '000001'
+
     self.stat = {
-      'low': data.low['000001'],
-      'middle': data.middle['000001'],
-      'high': data.high['000001']
+      'low': data.low[stock_id],
+      'middle': data.middle[stock_id],
+      'high': data.high[stock_id]
     }
 
   def notify_order(self, order):
@@ -73,8 +79,8 @@ class MAStrategy(bt.Strategy):
   def next(self):
     self.dt = self.data.datetime.date(0).isoformat()
 
-    if self.data.datetime.date(0) < self.from_date:
-      return
+    # if self.data.datetime.date(0) < self.from_date:
+    #   return
 
     if not self.position:
       if self.check_direction(self.ma2) > 0:
