@@ -23,7 +23,7 @@ class MAStrategy(bt.Strategy):
     self.sell_dt = None
 
     # Add a MovingAverageSimple indicator
-    # self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
+    self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
     self.ma2 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period2)
 
   def notify_order(self, order):
@@ -59,6 +59,7 @@ class MAStrategy(bt.Strategy):
     self.dt = d.datetime.date(0).isoformat()
     self.ma2_direction = self.check_direction(self.ma2)
 
+    # Move SL
     if not self.is_rising and \
       d.low[0] > d.low[-1] > d.low[-2]:
       self.sl = d.low[-2]
@@ -72,11 +73,11 @@ class MAStrategy(bt.Strategy):
     if not self.position:
       if self.ma2_direction > 0 and \
         d.close[0] > d.open[0] and \
-        d.low[0] > self.ma2[0] and \
-        d.low[0] > d.low[-1] > d.low[-2]:
-        if not self.sell_dt or (self.sell_dt and (d.datetime.date(0) - self.sell_dt).days > 2):
+        d.low[0] > self.ma2[0] and d.low[-1] > self.ma2[0] and \
+        d.low[0] > d.low[-1]:
+        if not self.sell_dt or (self.sell_dt and d.datetime.date(-2) > self.sell_dt):
           self.buy()
-          self.sl = d.low[0]
+          self.sl = d.low[-1]
           self.log('++Buy 1, %.2f' % d.close[0])
     else:
       if d.close[0] < self.ma2[0] or \

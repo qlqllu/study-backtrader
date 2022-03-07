@@ -9,7 +9,8 @@ from ma import MAStrategy
 import pandas as pd
 import numpy as np
 
-data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
+# data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
+data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\'
 
 def test_one_stock(stock_id):
   cerebro = bt.Cerebro()
@@ -52,8 +53,8 @@ if __name__ == '__main__':
       continue
 
     i += 1
-    if i > 50:
-      continue
+    # if i > 50:
+    #   continue
 
     print(f'Test {i}, {stock_id}')
     stock_count = i
@@ -66,7 +67,6 @@ if __name__ == '__main__':
       result['profit_per_week'].append(round(t.pnlcomm/(t.barlen if t.barlen > 0 else 1), 2))
 
   resultData = pd.DataFrame(result)
-  resultData.to_csv('./ma_test_result_trades-5.csv')
 
   # summary
   profit_sum = np.sum(resultData['profit'])
@@ -77,12 +77,13 @@ if __name__ == '__main__':
   trade_count = len(resultData['profit'])
   earn_trade_count = len(np.extract(resultData['profit'] > 0, resultData['profit']))
   loss_trade_count = len(np.extract(resultData['profit'] < 0, resultData['profit']))
+  earn_loss_rate = round(earn_trade_count / loss_trade_count * 100, 2)
   max_earn = np.max(resultData['profit'])
   max_loss = np.min(resultData['profit'])
   total_cache_use = np.sum(resultData['weeks'])
 
   print('---------------------')
-  print(f'{stock_count} stocks, {trade_count} trades. {earn_trade_count} earns, {loss_trade_count} losses')
+  print(f'{stock_count} stocks, {trade_count} trades. {earn_trade_count} earns, {loss_trade_count} losses, {earn_loss_rate}% Eean/Loss')
   print(f'profit_sum: {profit_sum}')
   print(f'profit_avg: {profit_avg}')
   print(f'trade_week_avg: {trade_week_avg}')
@@ -91,5 +92,8 @@ if __name__ == '__main__':
   print(f'max_earn: {max_earn}')
   print(f'max_loss: {max_loss}')
   print(f'total_cache_use(weeks): {total_cache_use}')
+
+  resultData.to_csv('./ma_test_result_trades-5.csv')
+
   sns.relplot(data=resultData, x='id', y='profit')
   plt.show()
