@@ -77,7 +77,7 @@ if __name__ == '__main__':
   trade_count = len(resultData['profit'])
   earn_trade_count = len(np.extract(resultData['profit'] > 0, resultData['profit']))
   loss_trade_count = len(np.extract(resultData['profit'] < 0, resultData['profit']))
-  earn_loss_rate = round(earn_trade_count / loss_trade_count * 100, 2)
+  earn_loss_rate = round(earn_trade_count / (earn_trade_count + loss_trade_count) * 100, 2)
   max_earn = np.max(resultData['profit'])
   max_loss = np.min(resultData['profit'])
   total_cache_use = np.sum(resultData['weeks'])

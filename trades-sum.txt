@@ -17,7 +17,7 @@ max_loss: -7374.93
 total_cache_use(weeks): 22747
 ---------------------------------------------
 Try 5: move SL
-3352 stocks, 22454 trades. 6800 earns, 15629 losses, 43.51% Eean/Loss
+3352 stocks, 22454 trades. 6800 earns, 15629 losses, 30.32% Eean/Loss
 profit_sum: 7318832.64
 profit_avg: 325.94783290282356
 trade_week_avg: 11.465663133517413
