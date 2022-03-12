@@ -9,8 +9,8 @@ from ma import MAStrategy
 import pandas as pd
 import numpy as np
 
-# data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
-data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\'
+data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
+# data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\'
 
 def test_one_stock(stock_id):
   cerebro = bt.Cerebro()
@@ -43,18 +43,18 @@ if __name__ == '__main__':
 
   files = os.listdir(f'{data_folder}zh_a\\')
   i = 0
-  result = dict(id=[], profit=[], weeks=[], profit_per_week=[])
+  result = dict(id=[], profit=[], profit_percent=[], weeks=[], profit_per_week=[])
   stock_count = 0
 
   for file in files:
     stock_id = file.split('.')[0]
 
-    if stock_id.startswith('3') or stock_id.startswith('4') or stock_id.startswith('8'):
-      continue
+    # if stock_id.startswith('3') or stock_id.startswith('4') or stock_id.startswith('8'):
+    #   continue
 
     i += 1
-    # if i > 50:
-    #   continue
+    if i > 20:
+      continue
 
     print(f'Test {i}, {stock_id}')
     stock_count = i
@@ -63,34 +63,35 @@ if __name__ == '__main__':
     for t in trades:
       result['id'].append(f'{stock_id}-{t.ref}')
       result['profit'].append(round(t.pnlcomm, 2))
+      result['profit_percent'].append(round(t.profit_percent, 2))
       result['weeks'].append(t.barlen if t.barlen > 0 else 1)
-      result['profit_per_week'].append(round(t.pnlcomm/(t.barlen if t.barlen > 0 else 1), 2))
+      result['profit_per_week'].append(round(t.profit_percent/(t.barlen if t.barlen > 0 else 1), 2))
 
   resultData = pd.DataFrame(result)
 
   # summary
-  profit_sum = np.sum(resultData['profit'])
-  profit_avg = np.average(resultData['profit'])
-  profit_per_week_avg = np.average(resultData['profit_per_week'])
+  profit_sum = np.sum(resultData['profit_percent'])
+  profit_avg = round(np.average(resultData['profit_percent']), 2)
+  profit_per_week_avg = round(np.average(resultData['profit_per_week']), 2)
   trade_week_avg = np.average(resultData['weeks'])
   profit_per_week_avg_2 = round(profit_avg/trade_week_avg, 2)
   trade_count = len(resultData['profit'])
   earn_trade_count = len(np.extract(resultData['profit'] > 0, resultData['profit']))
   loss_trade_count = len(np.extract(resultData['profit'] < 0, resultData['profit']))
   earn_loss_rate = round(earn_trade_count / (earn_trade_count + loss_trade_count) * 100, 2)
-  max_earn = np.max(resultData['profit'])
-  max_loss = np.min(resultData['profit'])
+  max_earn = np.max(resultData['profit_percent'])
+  max_loss = np.min(resultData['profit_percent'])
   total_cache_use = np.sum(resultData['weeks'])
 
   print('---------------------')
   print(f'{stock_count} stocks, {trade_count} trades. {earn_trade_count} earns, {loss_trade_count} losses, {earn_loss_rate}% Eean/Loss')
-  print(f'profit_sum: {profit_sum}')
-  print(f'profit_avg: {profit_avg}')
-  print(f'trade_week_avg: {trade_week_avg}')
-  print(f'profit_per_week_avg: {profit_per_week_avg}')
-  print(f'profit_per_week_avg_2: {profit_per_week_avg_2}')
-  print(f'max_earn: {max_earn}')
-  print(f'max_loss: {max_loss}')
+  print(f'profit_sum%: {profit_sum}')
+  print(f'profit_avg%: {profit_avg}')
+  print(f'trade_week_avg%: {trade_week_avg}')
+  print(f'profit_per_week_avg%: {profit_per_week_avg}')
+  print(f'profit_per_week_avg_2%: {profit_per_week_avg_2}')
+  print(f'max_earn%: {max_earn}')
+  print(f'max_loss%: {max_loss}')
   print(f'total_cache_use(weeks): {total_cache_use}')
 
   resultData.to_csv('./ma_test_result_trades-5.csv')

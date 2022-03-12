@@ -10,18 +10,18 @@ from ma_observer import MAObserver
 if __name__ == '__main__':
   cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
-  cerebro.broker.set_coc(True)
+  # cerebro.broker.set_coo(True)
   # cerebro.broker.setcommission(0.0005)
-  cerebro.addsizer(bt.sizers.AllInSizer)
+  cerebro.addsizer(bt.sizers.PercentSizer, percents=95)
   strats = cerebro.addstrategy(MAStrategy)
   cerebro.addobserver(SLObserver)
   cerebro.addobserver(MAObserver)
 
-  # data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
-  data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
+  data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
+  # data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
 
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}600870.csv',
+      dataname=f'{data_folder}000021.csv',
       datetime=1,
       open=2,
       close=3,

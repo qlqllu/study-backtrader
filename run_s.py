@@ -3,7 +3,7 @@ import datetime
 import backtrader as bt
 from matplotlib.pyplot import subplot
 
-from my_strategies.ma.ma import MAStrategy
+from my_strategies.ma.ma2 import MAStrategy
 
 if __name__ == '__main__':
   cerebro = bt.Cerebro()
@@ -16,7 +16,7 @@ if __name__ == '__main__':
   data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
 
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}000002.csv',
+      dataname=f'{data_folder}000001.csv',
       datetime=1,
       open=2,
       close=3,

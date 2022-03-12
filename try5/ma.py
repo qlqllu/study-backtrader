@@ -21,6 +21,7 @@ class MAStrategy(bt.Strategy):
     self.trades = []
     self.is_rising = None
     self.sell_dt = None
+    self.trade_init_value = 0
 
     # Add a MovingAverageSimple indicator
     self.ma1 = bt.indicators.SimpleMovingAverage(self.data, period=self.params.ma_period1)
@@ -36,9 +37,11 @@ class MAStrategy(bt.Strategy):
     if order.status in [order.Completed]:
       if order.isbuy():
         self.buy_price = order.executed.price
+        # self.log(f'BUY EXECUTED, Price: {order.executed.price}, {order.executed.size}')
         pass
       else:  # Sell
         self.order = None
+        # self.log(f'SELL EXECUTED, Price: {order.executed.price}, {order.executed.size}')
         pass
     elif order.status in [order.Canceled, order.Margin, order.Rejected]:
       self.log('Order Canceled/Margin/Rejected')
@@ -46,11 +49,15 @@ class MAStrategy(bt.Strategy):
 
   def notify_trade(self, trade):
     if not trade.isclosed:
+      self.trade_init_value = int(trade.price * trade.size)
       return
 
+    p = round(trade.pnlcomm / self.trade_init_value * 100, 2)
+
+    trade.profit_percent = p
+
     self.trades.append(trade)
-    self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-             (trade.pnl, trade.pnlcomm))
+    self.log(f'Trade, Init: {self.trade_init_value}, Profit: {int(trade.pnlcomm)}, Percent: {p}')
 
 
   def next(self):
