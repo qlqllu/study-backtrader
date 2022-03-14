@@ -9,8 +9,8 @@ from ma import MAStrategy
 import pandas as pd
 import numpy as np
 
-data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
-# data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\'
+# data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
+data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\'
 
 def test_one_stock(stock_id):
   cerebro = bt.Cerebro()
@@ -53,8 +53,8 @@ if __name__ == '__main__':
     #   continue
 
     i += 1
-    if i > 20:
-      continue
+    # if i > 20:
+    #   continue
 
     print(f'Test {i}, {stock_id}')
     stock_count = i

@@ -26,3 +26,13 @@ profit_per_week_avg_2: 28.43
 max_earn: 479863.01
 max_loss: -118224.37
 total_cache_use(weeks): 257450
+-------------------------------------------
+Try 6: Move SL, and try find Sell 1. Use percentage stats.
+
+4470 stocks, 19793 trades. 6279 earns, 13491 losses, 31.76% Eean/Loss
+Total profit%: 141601.95, max_earn%: 956.01, max_loss%: -44.34
+Profit per week%: 0.61
+profit_per_week_avg%: -1.61
+Profit per trade%: 7.15, Earn per trade%: 43.34, Loss per trade%:-9.68
+S1 sells: 268, S2 sells: 5046, SL sells: 14479
+Profit distribute: [-15.57, -11.71, -9.33, -7.47, -5.63, -3.53, 1.38, 12.31, 38.83, 956.01]
