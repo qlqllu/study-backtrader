@@ -11,7 +11,7 @@ import numpy as np
 
 # data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\'
 # data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\'
-data_folder = '/Users/juns6831/DS/zh_a/'
+data_folder = '/Users/juns6831/DS/zh_a/hfq/'
 
 
 def test_one_stock(stock_id):
@@ -51,12 +51,15 @@ if __name__ == '__main__':
   for file in files:
     stock_id = file.split('.')[0]
 
-    # if stock_id.startswith('3') or stock_id.startswith('4') or stock_id.startswith('8'):
-    #   continue
+    # start with 3: 创业板
+    # start with 8：新三板
+    # start with 4: 三板
+    if stock_id.startswith('sz3') or stock_id.startswith('bj4') or stock_id.startswith('bj8'):
+      continue
 
     i += 1
-    if i > 20:
-      continue
+    # if i > 20:
+    #   continue
 
     print(f'Test {i}, {stock_id}')
     stock_count = i

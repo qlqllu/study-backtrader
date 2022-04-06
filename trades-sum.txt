@@ -36,3 +36,13 @@ profit_per_week_avg%: -1.61
 Profit per trade%: 7.15, Earn per trade%: 43.34, Loss per trade%:-9.68
 S1 sells: 268, S2 sells: 5046, SL sells: 14479
 Profit distribute: [-15.57, -11.71, -9.33, -7.47, -5.63, -3.53, 1.38, 12.31, 38.83, 956.01]
+------------------------------------------
+Try 7: Copy try 6, use new data:
+
+2791 stocks, 12340 trades. 3767 earns, 8564 losses, 30.55% Eean/Loss
+Total profit%: 76601.91, max_earn%: 569.18, max_loss%: -42.05
+Profit per week%: 0.54
+profit_per_week_avg%: -1.71
+Profit per trade%: 6.21, Earn per trade%: 42.38, Loss per trade%:-9.7
+S1 sells: 147, S2 sells: 3164, SL sells: 9029
+Profit distribute: [-15.68, -11.79, -9.45, -7.6, -5.9, -3.9, 0.46, 11.26, 37.38, 569.18]
