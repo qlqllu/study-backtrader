@@ -3,24 +3,24 @@ import datetime
 import backtrader as bt
 from matplotlib.pyplot import subplot
 
-from ma import MAStrategy
-from trend_n_observer import TrendNObserver
+from strategy import MyStrategy
+from sl_observer import SLObserver
 
 if __name__ == '__main__':
-  cerebro = bt.Cerebro(stdstats=False)
+  cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
-  cerebro.broker.set_coc(True)
+  # cerebro.broker.set_coo(True)
   # cerebro.broker.setcommission(0.0005)
-  cerebro.addsizer(bt.sizers.AllInSizer)
-  strats = cerebro.addstrategy(MAStrategy)
-  cerebro.addobserver(TrendNObserver)
+  cerebro.addsizer(bt.sizers.PercentSizer, percents=95)
+  strats = cerebro.addstrategy(MyStrategy, log=True)
+  cerebro.addobserver(SLObserver)
 
   # data_folder = 'F:\\DS\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
+  # data_folder = 'E:\\github\\C3-Data-Science\\backtest\\datas\\stock\\zh_a\\'
   data_folder = '/Users/juns6831/DS/zh_a/hfq/'
 
-
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}sh600684.csv',
+      dataname=f'{data_folder}sh600975.csv',
       datetime=0,
       open=1,
       high=2,
@@ -28,7 +28,7 @@ if __name__ == '__main__':
       close=4,
       volume=5,
       dtformat=('%Y-%m-%d'),
-      fromdate=datetime.datetime(2015, 1, 1),
+      fromdate=datetime.datetime(2010, 1, 1),
       # todate=datetime.datetime(2020, 1, 1)
   )
   # cerebro.adddata(data)

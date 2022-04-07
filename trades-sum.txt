@@ -46,3 +46,13 @@ profit_per_week_avg%: -1.71
 Profit per trade%: 6.21, Earn per trade%: 42.38, Loss per trade%:-9.7
 S1 sells: 147, S2 sells: 3164, SL sells: 9029
 Profit distribute: [-15.68, -11.79, -9.45, -7.6, -5.9, -3.9, 0.46, 11.26, 37.38, 569.18]
+------------------------------------------
+Box break 1: Break 20 high - buy, move SL
+
+2791 stocks, 28234 trades. 10635 earns, 17565 losses, 37.71% Eean/Loss
+Total profit%: 87324.57, max_earn%: 886.71, max_loss%: -48.26
+Profit per week%: 0.43
+profit_per_week_avg%: -1.14
+Profit per trade%: 3.09, Earn per trade%: 23.61, Loss per trade%:-9.32
+S1 sells: 0, S2 sells: 0, SL sells: 0
+Profit distribute: [-14.85, -11.22, -8.69, -6.48, -4.1, -1.03, 4.12, 11.33, 26.74, 886.71]
