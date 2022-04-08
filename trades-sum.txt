@@ -65,3 +65,12 @@ Profit per day%: 0.18
 profit_per_day_avg%: 0.51
 Profit per trade%: 0.31, Earn per trade%: 4.11, Loss per trade%:-3.48
 Profit distribute: [-5.37, -3.43, -2.09, -0.98, 0.0, 1.03, 2.17, 3.73, 6.66, 185.33]
+--------------------------------------------
+Box break 3 - day data: Break 20 high, and ma60 direction is up - buy, move SL
+
+2791 stocks, 29344 trades. 14765 earns, 14249 losses, 50.89% Eean/Loss
+Total profit%: 9911.73, max_earn%: 94.99, max_loss%: -20.78
+Profit per day%: 0.21
+profit_per_day_avg%: 0.54
+Profit per trade%: 0.34, Earn per trade%: 4.25, Loss per trade%:-3.71
+Profit distribute: [-5.79, -3.57, -2.12, -0.94, 0.06, 1.11, 2.33, 4.05, 7.29, 94.99]
