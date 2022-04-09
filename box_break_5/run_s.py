@@ -20,7 +20,7 @@ if __name__ == '__main__':
   data_folder = '/Users/juns6831/DS/zh_a/hfq/'
 
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}sh688181.csv',
+      dataname=f'{data_folder}sh603059.csv',
       datetime=0,
       open=1,
       high=2,

@@ -109,7 +109,7 @@ if __name__ == '__main__':
   profit_dist = list(map(lambda x: round(x, 2), profit_dist))
   print(f'Profit distribute: {profit_dist}')
 
-  resultData.to_csv('./box_break_test_result_trades-3.csv')
+  resultData.to_csv('./box_break_test_result_trades-5.csv')
 
   sns.relplot(data=resultData, x='id', y='profit_percent')
   plt.show()
