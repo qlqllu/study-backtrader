@@ -86,9 +86,9 @@ Profit distribute: [-5.83, -3.57, -2.11, -0.93, 0.07, 1.18, 2.46, 4.28, 8.07, 11
 --------------------------------------------
 Box break 5 - day data: Break 60 high - buy, move SL (slightly different with 4 )
 
-2791 stocks, 24472 trades. 10972 earns, 13335 losses, 45.14% Eean/Loss
-Total profit%: 13732.8, max_earn%: 149.0, max_loss%: -22.88
-Profit per day%: 0.23
-profit_per_day_avg%: -0.2
-Profit per trade%: 0.56, Earn per trade%: 6.46, Loss per trade%:-4.28
-Profit distribute: [-7.05, -4.74, -3.14, -1.75, -0.57, 0.62, 2.25, 4.76, 9.04, 149.0]
+2791 stocks, 27451 trades. 13993 earns, 13135 losses, 51.58% Eean/Loss
+Total profit%: 12002.42, max_earn%: 114.13, max_loss%: -20.0
+Profit per day%: 0.31
+profit_per_day_avg%: 0.56
+Profit per trade%: 0.44, Earn per trade%: 4.36, Loss per trade%:-3.73
+Profit distribute: [-5.83, -3.51, -2.02, -0.84, 0.11, 0.95, 2.14, 4.17, 8.27, 114.13]

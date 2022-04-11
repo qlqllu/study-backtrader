@@ -78,10 +78,6 @@ class MyStrategy(bt.Strategy):
         self.buy()
         self.sl = d.open[-1]
     else:
-      if d.low[0] < self.sl:
-        self.sell()
-        return
-
       # Move SL
       if not self.is_rising and \
         d.close[0] > d.close[-1] > d.close[-2]:
@@ -93,6 +89,9 @@ class MyStrategy(bt.Strategy):
       if d.close[0] > self.sl * 1.05:
         self.sl = d.close[0]
 
+      if d.low[0] < self.sl:
+        self.sell()
+        return
       # if d.close[0] > self.buy_price * 3 and \
       #    d.close[0] >= self.ma1[0] * 1.2 and \
       #    d.close[0] < d.open[0]:
