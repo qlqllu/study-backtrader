@@ -110,3 +110,15 @@ Profit per day%: 0.39
 profit_per_day_avg%: 0.64
 Profit per trade%: 0.5, Earn per trade%: 4.63, Loss per trade%:-3.98
 Profit distribute: [-6.21, -3.6, -2.03, -0.79, 0.13, 1.1, 2.59, 4.9, 9.64, 74.92]
+
+
+
+----------------------------------------------------
+Random test, move SL:
+
+2791 stocks, 80656 trades. 44222 earns, 35034 losses, 55.8% Eean/Loss
+Total profit%: 45800.02, max_earn%: 352.6, max_loss%: -23.03
+Profit per day%: 0.14
+profit_per_day_avg%: 0.15
+Profit per trade%: 0.57, Earn per trade%: 3.93, Loss per trade%:-3.65
+Profit distribute: [-6.12, -2.48, -1.14, -0.32, 0.4, 1.15, 2.06, 3.31, 5.76, 352.6]
