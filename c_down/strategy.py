@@ -7,7 +7,8 @@ from low_price_indicator import LowPriceIndicator
 
 class MyStrategy(bt.Strategy):
   params = (
-    ('break_period', 20),
+    ('c_down', 4),
+    ('break_period', 60),
     ('log', False)
   )
 
@@ -42,15 +43,20 @@ class MyStrategy(bt.Strategy):
     if not self.position:
       self.sl = 0
 
-      if d.close[0] < self.low_price[-1] * 1.01 and d.close[0] > d.open[0]:
+      is_cdown = True
+      for i in range(2, self.p.c_down + 2):
+        if d.close[0 - i] > d.open[0 - i]:
+          is_cdown = False
+
+      if is_cdown and d.close[0] > d.open[0] and d.close[-1] > d.open[-1] and d.close[0] > self.low_price[-1]:
         self.buy()
-        self.sl = d.open[0] * 0.9
+        self.sl = d.low[0]
     else:
       # Move SL
-      if d.close[0] > self.sl * 1.1:
-        self.sl = self.sl * 1.05
+      if d.close[0] > self.sl * 1.05:
+        self.sl = self.sl * 1.02
 
-      if d.close[0] < self.sl:
+      if d.low[0] < self.sl:
         self.sell()
         return
 

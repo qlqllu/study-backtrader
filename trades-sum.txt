@@ -110,8 +110,17 @@ Profit per day%: 0.39
 profit_per_day_avg%: 0.64
 Profit per trade%: 0.5, Earn per trade%: 4.63, Loss per trade%:-3.98
 Profit distribute: [-6.21, -3.6, -2.03, -0.79, 0.13, 1.1, 2.59, 4.9, 9.64, 74.92]
+--------------------------------------------
+Box break 8 - day data: Break 20 low, buy
 
-
+200 stocks, 1926 trades. 644 earns, 1281 losses, 33.45% Eean/Loss
+Total profit%: -58.84, max_earn%: 144.49, max_loss%: -19.01
+Profit per day%: -0.0
+profit_per_day_avg%: -0.59
+Profit per trade%: -0.03, Earn per trade%: 13.56, Loss per trade%:-6.86
+Profit distribute: [-10.9, -8.19, -7.02, -6.29, -4.01, -1.89, 1.68, 6.16, 16.22, 144.49]
+Top stocks: ['sz000829', 'sh600009', 'sz002385', 'sz002019', 'sh601100', 'sz000975', 'sh600419', 'sz002145', 'sz002192', 'sz002178']
+Bottom stocks: ['sz002541', 'sz002756', 'sz000626', 'sh601908', 'sh600815', 'sz000419', 'sz001896', 'sz002421', 'sz000752', 'sz000551']
 
 ----------------------------------------------------
 Random test, move SL:
