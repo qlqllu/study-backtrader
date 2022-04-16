@@ -4,17 +4,20 @@ import numpy as np
 import math
 import datetime
 
-class MAStrategy(bt.Strategy):
+class MyStrategy(bt.Strategy):
   params = (
     ('ma_period1', 10),
     ('ma_period2', 60),
     ('price_period', 30),
     ('stock_id', None)
+    ('log', False)
   )
 
   def log(self, txt, dt=None):
     dt = dt or self.datas[0].datetime.date(0)
-    print('%s, %s' % (dt.isoformat(), txt))
+
+    if self.params.log:
+      print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     self.buy_order = None

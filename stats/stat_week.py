@@ -7,19 +7,21 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+data_folder = 'data_yw/zh_a/'
+
 def statOneStock(file):
-  data = pd.read_csv(f'./stock_data/{file}', parse_dates=['dt'], index_col='dt')
+  data = pd.read_csv(f'{data_folder}/{file}', parse_dates=['date'], index_col='date')
   if (datetime.datetime.now() - data.index[0]).days < 365 * 2:
     return None
 
   weekData = data.resample('W').last()
-  weekData.Open = data.Open.resample('W').first()
-  weekData.Close = data.Close.resample('W').last()
-  weekData.High = data.High.resample('W').max()
-  weekData.Low = data.Low.resample('W').min()
+  weekData.open = data.open.resample('W').first()
+  weekData.close = data.close.resample('W').last()
+  weekData.high = data.high.resample('W').max()
+  weekData.low = data.low.resample('W').min()
 
-  open = np.array(weekData.Open)
-  close = np.array(weekData.Close)
+  open = np.array(weekData.open)
+  close = np.array(weekData.close)
   diff = close - open
   diff = diff / open * 100
   pUp = np.extract(diff > 0, diff)
@@ -32,31 +34,33 @@ if __name__ == '__main__':
 
   result = dict(id=[], low=[], middle=[], high=[])
 
-  files = os.listdir('./stock_data')
+  files = os.listdir(data_folder)
   i = 0
   for file in files:
-    stockId = file.split('.')[1]
-    if stockId.startswith('3') or stockId.startswith('4') or stockId.startswith('8'):
+    stock_id = file.split('.')[0]
+    if stock_id.startswith('sz3') or stock_id.startswith('bj4') or stock_id.startswith('bj8'):
       continue
 
-    print('Stat ' + stockId)
+    i += 1
+    print(f'Stat {i}, {stock_id}')
 
     stat = statOneStock(file)
 
     if stat is None:
       continue
 
-    result['id'].append(stockId)
+    result['id'].append(stock_id)
     result['low'].append(stat[0])
     result['middle'].append(stat[1])
     result['high'].append(stat[2])
 
-  resultData = pd.DataFrame(result)
+  resultData = pd.DataFrame(result).sort_values(by='high', ascending=False)
   resultData.to_csv('./up_stat_week.csv')
-  sns.relplot(data=resultData, x='id', y='low')
-  sns.relplot(data=resultData, x='id', y='middle')
-  sns.relplot(data=resultData, x='id', y='high')
-  plt.show()
+  print(f'Top 5 high: {resultData.head(5)}')
+  # sns.relplot(data=resultData, x='id', y='low')
+  # sns.relplot(data=resultData, x='id', y='middle')
+  # sns.relplot(data=resultData, x='id', y='high')
+  # plt.show()
       # sns.lineplot(data=data, x='dt', y='Close')
       # plt.show()
 
