@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 if __name__ == '__main__':
-  data = pd.read_csv('./random_test_result_trades-1.csv')
+  data = pd.read_csv('./support_test_result_trades-1.csv')
   # sns.relplot(data=data, x='id', y='profit_percent')
   # plt.show()
 

@@ -131,3 +131,12 @@ Profit per day%: 0.14
 profit_per_day_avg%: 0.15
 Profit per trade%: 0.57, Earn per trade%: 3.93, Loss per trade%:-3.65
 Profit distribute: [-6.12, -2.48, -1.14, -0.32, 0.4, 1.15, 2.06, 3.31, 5.76, 352.6]
+------------------------------------------------
+support line buy
+
+500 stocks, 3632 trades. 1647 earns, 1960 losses, 45.66% Eean/Loss
+Total profit%: 110.25, max_earn%: 198.99, max_loss%: -22.71
+Profit per day%: 0.01
+profit_per_day_avg%: -0.35
+Profit per trade%: 0.03, Earn per trade%: 5.16, Loss per trade%:-4.28
+Profit distribute: [-6.83, -4.69, -3.17, -1.88, -0.6, 0.86, 2.31, 3.86, 6.31, 198.99]
