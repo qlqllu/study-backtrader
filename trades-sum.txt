@@ -1,20 +1,3 @@
-3130 stocks, 1178 trades. 500 earns, 678 losses
-profit_sum: 1739810.4800000002
-profit_avg: 1476.9189134125638
-profit_per_week_avg: 5.47097623089983
-max_earn: 51980.77
-max_loss: -10543.25
-total_cache_use(weeks): 29029
------------------------------------------
-3130 stocks, 679 trades. 277 earns, 401 losses
-profit_sum: 2080867.1199999996
-profit_avg: 3064.605478645066
-trade_week_avg: 33.500736377025035
-profit_per_week_avg: 22.456303387334323
-profit_per_week_avg_2: 91.48
-max_earn: 42471.91
-max_loss: -7374.93
-total_cache_use(weeks): 22747
 ---------------------------------------------
 Try 5: move SL
 3352 stocks, 22454 trades. 6800 earns, 15629 losses, 30.32% Eean/Loss
@@ -140,3 +123,12 @@ Profit per day%: 0.01
 profit_per_day_avg%: -0.35
 Profit per trade%: 0.03, Earn per trade%: 5.16, Loss per trade%:-4.28
 Profit distribute: [-6.83, -4.69, -3.17, -1.88, -0.6, 0.86, 2.31, 3.86, 6.31, 198.99]
+-----------------------------------------------
+New ma,
+
+200 stocks, 35 trades. 10 earns, 25 losses, 28.57% Eean/Loss
+Total profit%: 708.6, max_earn%: 334.63, max_loss%: -31.33
+Profit per week%: 0.56
+profit_per_week_avg%: 0.27
+Profit per trade%: 20.25, Earn per trade%: 109.09, Loss per trade%:-15.29
+Profit distribute: [-21.07, -18.5, -15.97, -14.5, -11.58, -7.81, -3.07, 13.8, 143.5, 334.63]

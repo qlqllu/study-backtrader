@@ -12,13 +12,13 @@ if __name__ == '__main__':
   # cerebro.broker.set_coo(True)
   # cerebro.broker.setcommission(0.0005)
   cerebro.addsizer(bt.sizers.PercentSizer, percents=95)
-  strats = cerebro.addstrategy(MyStrategy, log=True)
+  strats = cerebro.addstrategy(MyStrategy, log=True, stock_id='sh603266')
   # cerebro.addobserver(SLObserver)
 
   data_folder = 'data_yw/zh_a/'
 
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}sh600815.csv',
+      dataname=f'{data_folder}sh603266.csv',
       datetime=0,
       open=1,
       high=2,

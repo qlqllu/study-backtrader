@@ -9,7 +9,7 @@ class MyStrategy(bt.Strategy):
     ('ma_period1', 10),
     ('ma_period2', 60),
     ('price_period', 30),
-    ('stock_id', None)
+    ('stock_id', None),
     ('log', False)
   )
 
@@ -22,6 +22,7 @@ class MyStrategy(bt.Strategy):
   def __init__(self):
     self.buy_order = None
     self.sell_order = None
+    self.sell_reason = None
     self.trades = []
     self.dt = None
     self.buy_price = None
@@ -37,13 +38,17 @@ class MyStrategy(bt.Strategy):
 
     stock_id = self.p.stock_id
     if not stock_id in data.index.values:
-      stock_id = '000001'
-
-    self.stat = {
-      'low': data.low[stock_id],
-      'middle': data.middle[stock_id],
-      'high': data.high[stock_id]
-    }
+      self.stat = {
+        'low': 2,
+        'middle': 6,
+        'high': 10
+      }
+    else:
+      self.stat = {
+        'low': data.low[stock_id],
+        'middle': data.middle[stock_id],
+        'high': data.high[stock_id]
+      }
 
   def notify_order(self, order):
     if order.status in [order.Submitted, order.Accepted]:
@@ -73,17 +78,19 @@ class MyStrategy(bt.Strategy):
 
   def notify_trade(self, trade):
     if not trade.isclosed:
+      self.trade_init_value = int(trade.price * trade.size)
       return
 
+    p = round(trade.pnlcomm / self.trade_init_value * 100, 2)
+
+    trade.profit_percent = p
+    trade.sell_reason = self.sell_reason
+
     self.trades.append(trade)
-    self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-             (trade.pnl, trade.pnlcomm))
+    self.log(f'Trade, Init: {self.trade_init_value}, Profit: {int(trade.pnlcomm)}, Percent: {p}')
 
   def next(self):
     self.dt = self.data.datetime.date(0).isoformat()
-
-    # if self.data.datetime.date(0) < self.from_date:
-    #   return
 
     if not self.position:
       if self.check_direction(self.ma2) > 0:
@@ -97,12 +104,6 @@ class MyStrategy(bt.Strategy):
           # self.log('BUY CREATE, %.2f, Find high price at: %s, %.2f' % (self.data.close[0], self.data.datetime.date(0 - i).isoformat(), self.data.close[0 - i]))
           self.log('BUY CREATE1, %.2f' % (self.data.close[0]))
           self.buy_order = self.buy()
-        # elif self.ma1[0] >= self.ma2[0] and \
-        #   self.data.close[0] > self.data.open[0] and \
-        #   self.data.close[0] > self.ma2[0] and self.data.low < self.ma2[0] and self.data.high[0] > self.ma1[0]:
-        #   # buy 2
-        #   self.log('BUY CREATE2, %.2f' % (self.data.close[0]))
-        #   self.buy_order = self.buy()
     else:
       if self.data.close[0] > self.buy_price * 2: # rise more then ..
         if self.data.close[0] >= self.ma1[0] * (1 + self.stat['high'] / 100): # rise too fast
