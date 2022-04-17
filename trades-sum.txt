@@ -132,3 +132,34 @@ Profit per week%: 0.56
 profit_per_week_avg%: 0.27
 Profit per trade%: 20.25, Earn per trade%: 109.09, Loss per trade%:-15.29
 Profit distribute: [-21.07, -18.5, -15.97, -14.5, -11.58, -7.81, -3.07, 13.8, 143.5, 334.63]
+---------------------------------------------
+flzt, week
+
+2791 stocks, 25 trades. 17 earns, 8 losses, 68.0% Eean/Loss
+Total profit%: 482.14, max_earn%: 152.97, max_loss%: -21.07
+Profit per week%: 5.81
+profit_per_week_avg%: 2.66
+Profit per trade%: 19.29, Earn per trade%: 32.53, Loss per trade%:-8.87
+Profit distribute: [-7.59, -4.1, -0.73, 3.7, 12.13, 17.34, 22.47, 34.32, 55.83, 152.97]
+Top stocks:     stock_id  profit_percent
+0   sh600380          152.97
+20  sz002174           75.02
+18  sz002160           66.35
+22  sz002559           40.05
+3   sh603025           39.10
+19  sz002162           33.12
+16  sz000655           27.95
+12  sh603638           23.46
+15  sz000633           18.53
+5   sh603101           17.89
+Bottom stocks:     stock_id  profit_percent
+4   sh603037            2.95
+2   sh600858            2.42
+23  sz002615           -1.52
+24  sz002941           -3.32
+14  sh605378           -3.66
+9   sh603330           -5.88
+6   sh603115           -7.52
+11  sh603538           -7.64
+1   sh600522          -20.32
+21  sz002180          -21.07
