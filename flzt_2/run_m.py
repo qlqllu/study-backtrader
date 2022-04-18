@@ -16,7 +16,7 @@ def test_one_stock(stock_id):
   cerebro.broker.setcash(10000.0)
   cerebro.broker.set_coc(True)
   # cerebro.broker.setcommission(0.0005)
-  cerebro.addsizer(bt.sizers.PercentSizer, percents=95)
+  cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
   cerebro.addstrategy(MyStrategy)
 
   data = bt.feeds.GenericCSVData(
