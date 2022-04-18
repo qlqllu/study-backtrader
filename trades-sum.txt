@@ -168,3 +168,12 @@ Profit per day%: 4.17
 profit_per_day_avg%: 0.47
 Profit per trade%: 13.0, Earn per trade%: 31.91, Loss per trade%:-4.96
 Profit distribute: [-8.49, -5.53, -3.5, -1.77, -0.27, 2.17, 5.75, 11.77, 37.22, 797.01]
+---------------------------------------------
+flzt-5, day, do not check the third K, change the initial osillation
+
+2791 stocks, 262 trades. 105 earns, 155 losses, 40.38% Eean/Loss
+Total profit%: 638.35, max_earn%: 150.7, max_loss%: -16.34
+Profit per day%: 0.9
+profit_per_day_avg%: -0.92
+Profit per trade%: 2.44, Earn per trade%: 13.33, Loss per trade%:-4.91
+Profit distribute: [-7.94, -5.73, -4.12, -2.96, -1.58, 0.01, 2.72, 6.08, 12.78, 150.7]
