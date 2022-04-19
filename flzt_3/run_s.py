@@ -18,7 +18,7 @@ if __name__ == '__main__':
   data_folder = 'data_yw/zh_a/'
 
   data = bt.feeds.GenericCSVData(
-      dataname=f'{data_folder}sz002105.csv',
+      dataname=f'{data_folder}sz000546.csv',
       datetime=0,
       open=1,
       high=2,

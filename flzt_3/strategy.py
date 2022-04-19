@@ -6,7 +6,7 @@ import numpy as np
 class MyStrategy(bt.Strategy):
   params = (
     ('oscillation', 0.2),
-    ('oscillation_p', 30),
+    ('oscillation_p', 90),
     ('log', False)
   )
 
@@ -38,13 +38,10 @@ class MyStrategy(bt.Strategy):
         d.low[0] > d.high[-1] and \
         d.close[-1] >= d.close[-2] * 1.099:
 
-        # self.buy()
-        # self.sl = d.close[-2]
-        p = min(len(d.close) - 3, os_p)
-        p_data = d.close.get(ago=-3, size=p)
-        if len(p_data) < 5:
+        if len(d.close) - 3 < os_p:
           return
 
+        p_data = d.close.get(ago=-3, size=os_p)
         if max(p_data) <= min(p_data) * (1 + os):
           self.buy()
           self.sl = d.close[-1]

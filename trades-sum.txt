@@ -153,12 +153,12 @@ Profit distribute: [-10.23, -6.81, -4.97, -3.5, -1.77, -0.16, 1.57, 3.9, 8.57, 6
 ------------------------------------------
 flzt-3, day, do not check the third K
 
-2791 stocks, 1634 trades. 676 earns, 949 losses, 41.6% Eean/Loss
-Total profit%: 2999.17, max_earn%: 180.42, max_loss%: -16.58
-Profit per day%: 0.7
-profit_per_day_avg%: -0.77
-Profit per trade%: 1.84, Earn per trade%: 10.99, Loss per trade%:-4.67
-Profit distribute: [-7.92, -5.58, -3.87, -2.61, -1.23, 0.33, 2.48, 5.54, 11.58, 180.42]
+2791 stocks, 198 trades. 69 earns, 128 losses, 35.03% Eean/Loss
+Total profit%: 345.31, max_earn%: 180.42, max_loss%: -16.34
+Profit per day%: 0.67
+profit_per_day_avg%: -1.16
+Profit per trade%: 1.74, Earn per trade%: 14.78, Loss per trade%:-5.27
+Profit distribute: [-8.95, -6.56, -5.04, -3.64, -2.62, -1.1, 1.61, 6.41, 12.62, 180.42]
 ---------------------------------------------
 flzt-4, day, do not check the third K, do not check the initial osillation
 
