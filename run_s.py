@@ -4,6 +4,7 @@ from matplotlib.pyplot import subplot
 import importlib
 import pathlib
 import argparse
+from observers.sl_observer import SLObserver
 
 parser = argparse.ArgumentParser(prog = 'Strategy Runner', description = 'Run a strategy for back testing.')
 parser.add_argument('-t', '--strategy', type=str, required=True)
@@ -11,6 +12,7 @@ parser.add_argument('-s', '--stock', type=str, required=True)
 parser.add_argument('-b', '--bdate', type=str, required=False)
 parser.add_argument('-e', '--edate', type=str, required=False)
 parser.add_argument('-f', '--time_frame', type=str, required=False, help='d,w,m')
+parser.add_argument('-m', '--mode', type=str, required=False, help='b,l. b means back test, l means run last bar only.')
 args = parser.parse_args()
 
 strategy_name = args.strategy
@@ -18,6 +20,7 @@ stock_id = args.stock
 begin_date = datetime.datetime.fromisoformat(args.bdate) if args.bdate else datetime.datetime(2010, 1, 1)
 end_date = datetime.datetime.fromisoformat(args.edate) if args.edate else None
 time_frame = args.time_frame if args.time_frame else 'd'
+last_bar = True if args.mode == 'l' else False
 
 root_path = pathlib.PurePath(__file__).parent
 strategy_path = pathlib.Path(root_path, f'strategies/{strategy_name}/{strategy_name}.py')
@@ -34,10 +37,11 @@ if not stock_path.exists():
 Strategy = importlib.import_module(f'strategies.{strategy_name}.{strategy_name}').Strategy
 
 if __name__ == '__main__':
-  cerebro = bt.Cerebro()
+  cerebro = bt.Cerebro(preload=True)
   cerebro.broker.setcash(10000.0)
   cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
-  strats = cerebro.addstrategy(Strategy, log=True)
+  strats = cerebro.addstrategy(Strategy, log=True, last_bar=last_bar)
+  cerebro.addobserver(SLObserver)
 
   data = bt.feeds.GenericCSVData(
       dataname=stock_path,
@@ -49,7 +53,7 @@ if __name__ == '__main__':
       volume=5,
       dtformat=('%Y-%m-%d'),
       fromdate=begin_date,
-      todate=end_date
+      todate=end_date,
   )
   if time_frame == 'd':
     cerebro.adddata(data)

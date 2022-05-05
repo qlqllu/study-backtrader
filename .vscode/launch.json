@@ -5,18 +5,34 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "Single run",
       "type": "python",
       "request": "launch",
-      "program": "${file}",
+      "program": "${workspaceFolder}/run_s.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "args": [
-        "-t", "flzt1",
-        "-s", "sz002868",
+        "-t", "box_break_1",
+        "-s", "sh601318",
         "-b", "2020-01-01",
-        "-e", "2022-01-01",
-        "-f", "w"
+        // "-e", "2022-01-01",
+        "-f", "d",
+        "-m", "l"
+      ]
+    }, {
+      "name": "Batch run",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/run_m.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "args": [
+        "-t", "box_break_1",
+        "-m", "l",
+        "-b", "2020-01-01",
+        "-f", "d",
+        "-r", "1",
+        "-n", "100"
       ]
     }
   ]

@@ -72,11 +72,12 @@ def test_one_stock(stock_id):
 
   start_value = cerebro.broker.getvalue()
   result = cerebro.run()
-  return result[0].trades
+  return result[0].trades, result[0].buy_last_bar
 
 if __name__ == '__main__':
   files = os.listdir(f'{data_folder}')
   result = dict(id=[], profit=[], profit_percent=[], days=[], profit_p_per_day=[], stock_id=[], sell_reason=[])
+  buy_last_bars = []
   i = 0
   stock_count = 0
 
@@ -95,7 +96,10 @@ if __name__ == '__main__':
 
     print(f'Test {i}, {stock_id}')
     stock_count = i
-    trades = test_one_stock(stock_id)
+    trades, buy_last_bar = test_one_stock(stock_id)
+
+    if buy_last_bar:
+      buy_last_bars.append(stock_id)
 
     for t in trades:
       result['id'].append(f'{stock_id}-{t.ref}')
@@ -107,6 +111,10 @@ if __name__ == '__main__':
       result['sell_reason'].append(t.sell_reason)
 
   resultData = pd.DataFrame(result)
+
+  print('------------------')
+  if len(buy_last_bars) > 0:
+    print(f'Find stocks: {buy_last_bars}')
 
   if len(resultData) == 0:
     print('No trade.')
