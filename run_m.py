@@ -13,6 +13,7 @@ parser.add_argument('-t', '--strategy', type=str, required=True)
 parser.add_argument('-b', '--bdate', type=str, required=False)
 parser.add_argument('-e', '--edate', type=str, required=False)
 parser.add_argument('-f', '--time_frame', type=str, required=False, help='d,w,m')
+parser.add_argument('-m', '--mode', type=str, required=False, help='b,l. b means back test, l means run last bar only.')
 parser.add_argument('-n', '--num', type=int, required=False, help='Number stocks to test')
 parser.add_argument('-r', '--result_num', type=int, required=False, help='Test result number')
 args = parser.parse_args()
@@ -23,6 +24,7 @@ end_date = datetime.datetime.fromisoformat(args.edate) if args.edate else None
 time_frame = args.time_frame if args.time_frame else 'd'
 test_num = args.num
 result_num = args.result_num if args.result_num else 0
+last_bar = True if args.mode == 'l' else False
 
 root_path = pathlib.PurePath(__file__).parent
 strategy_path = pathlib.Path(root_path, f'strategies/{strategy_name}/{strategy_name}.py')
@@ -45,7 +47,7 @@ def test_one_stock(stock_id):
   cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
   cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
-  cerebro.addstrategy(Strategy)
+  cerebro.addstrategy(Strategy, last_bar=last_bar)
   stock_path = pathlib.Path(data_folder, f'{stock_id}.csv')
 
   data = bt.feeds.GenericCSVData(

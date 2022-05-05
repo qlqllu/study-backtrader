@@ -5,6 +5,7 @@ import numpy as np
 
 class Strategy(bt.Strategy):
   params = (
+    ('last_bar', False),
     ('oscillation', 0.1),
     ('oscillation_p', 30),
     ('log', False)
@@ -26,7 +27,7 @@ class Strategy(bt.Strategy):
   def next(self):
     d = self.data
 
-    if len(self) < d.close.buflen():
+    if self.p.last_bar and len(self) < d.close.buflen():
       return
 
     self.dt = d.datetime.date(0).isoformat()
