@@ -10,7 +10,14 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "justMyCode": false
+      "justMyCode": false,
+      "args": [
+        "-t", "flzt1",
+        "-s", "sz002868",
+        "-b", "2020-01-01",
+        "-e", "2022-01-01",
+        "-f", "w"
+      ]
     }
   ]
 }
