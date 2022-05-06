@@ -2,11 +2,11 @@ from datetime import datetime
 import pandas as pd
 import backtrader as bt
 import numpy as np
-from indicators.high_price_indicator import HighPriceIndicator
 
 class Strategy(bt.Strategy):
   params = (
-    ('break_period', 30),
+    ('box_h', 0.20),
+    ('box_p', 60),
     ('log', False),
     ('last_bar', False),
   )
@@ -25,8 +25,8 @@ class Strategy(bt.Strategy):
     self.buy_reason = ''
     self.sell_reason = ''
     self.buy_last_bar = False
-
-    self.high_price = HighPriceIndicator(self.data, subplot=False, period=self.params.break_period)
+    self.box_high = 0
+    self.box_low = 0
 
 
   def notify_order(self, order):
@@ -69,29 +69,36 @@ class Strategy(bt.Strategy):
     if self.p.last_bar and len(self) < d.close.buflen():
       return
 
+    self.box_high = 0
+    self.box_low = 0
+
     self.dt = d.datetime.date(0).isoformat()
+    box_h = self.params.box_h
+    box_p = self.params.box_p
 
     if not self.position:
       self.sl = 0
 
-      if d.close[0] > self.high_price[-1] * 1.01 and d.close[0] > d.open[0]:
+      if len(d.close.get(ago=-1, size=box_p)) < box_p:
+        return
+
+      box_max = max(d.high.get(ago=-1, size=box_p))
+      box_min = min(d.low.get(ago=-1, size=box_p))
+      if box_max <= box_min * (1 + box_h) and d.close[0] > box_max:
         self.buy()
-        self.sl = d.open[-1]
+        self.sl = box_min
+        self.box_high = box_max
+        self.box_low = box_min
+
         if self.p.last_bar:
           self.buy_last_bar = True
+
     else:
       if d.low[0] < self.sl:
         self.sell()
         return
 
       # Move SL
-      if not self.is_rising and \
-        d.close[0] > d.close[-1] > d.close[-2]:
-        self.sl = d.open[-1]
-        self.is_rising = True
-      else:
-        self.is_rising = False
-
       if d.close[0] > self.sl * 1.1:
         self.sl = self.sl * 1.1
 

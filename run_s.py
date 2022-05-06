@@ -5,6 +5,7 @@ import importlib
 import pathlib
 import argparse
 from observers.sl_observer import SLObserver
+from observers.box_observer import BoxObserver
 
 parser = argparse.ArgumentParser(prog = 'Strategy Runner', description = 'Run a strategy for back testing.')
 parser.add_argument('-t', '--strategy', type=str, required=True)
@@ -42,6 +43,7 @@ if __name__ == '__main__':
   cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
   strats = cerebro.addstrategy(Strategy, log=True, last_bar=last_bar)
   cerebro.addobserver(SLObserver)
+  cerebro.addobserver(BoxObserver)
 
   data = bt.feeds.GenericCSVData(
       dataname=stock_path,
