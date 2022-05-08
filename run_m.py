@@ -149,8 +149,16 @@ if __name__ == '__main__':
   print(f'Total profit%: {profit_percent_sum}, max_earn%: {max_earn}, max_loss%: {max_loss}')
 
   total_cache_use = np.sum(resultData['bars'])
-  profit_per_bar = round(profit_percent_sum/total_cache_use, 2)
-  print(f'Profit percent per bar%: {profit_per_bar}')
+  profit_percent_per_bar = round(profit_percent_sum/total_cache_use, 2)
+  bars = 0
+  if time_frame == 'd':
+    bars = 250
+  elif time_frame == 'w':
+    bars = 50
+  elif time_frame == 'm':
+    bars = 12
+  profit_percent_per_year = profit_percent_per_bar * bars
+  print(f'Profit percent per bar%: {profit_percent_per_bar}, Profit percent per year%: {profit_percent_per_year}')
 
   profit_per_trade = round(profit_percent_sum/trade_count, 2)
   earn_per_trade = round(np.average(np.extract(resultData['profit_percent'] > 0, resultData['profit_percent'])), 2)
@@ -179,8 +187,8 @@ if __name__ == '__main__':
   print(f'Profit distribute: {profit_dist}')
 
   data_group = resultData.groupby('stock_id', as_index=False).sum('profit_percent').sort_values(['profit_percent'], ascending=[False])
-  top_stocks = data_group.loc[:, ['stock_id', 'profit_percent']].head(10)
-  bottom_stocks = data_group.loc[:, ['stock_id', 'profit_percent']].tail(10)
+  top_stocks = data_group.loc[:, ['stock_id', 'profit_percent']].head(5)
+  bottom_stocks = data_group.loc[:, ['stock_id', 'profit_percent']].tail(5)
   print(f'Top stocks: {top_stocks}')
   print(f'Bottom stocks: {bottom_stocks}')
 
