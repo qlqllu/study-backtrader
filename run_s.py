@@ -66,13 +66,15 @@ if __name__ == '__main__':
 
   # 策略执行前的资金
   print('Starting Value: %.2f' % cerebro.broker.getvalue())
-
   result = cerebro.run()
 
-  r1 = result[0]
-
+  trades = result[0].trades
   sum_p = 0
-  for t in r1.trades:
+  for t in trades:
+    if not t.open_trade:
+      print('Not find open trade.')
+      continue
+
     sum_p += t.profit_percent
 
   # 策略执行后的资金

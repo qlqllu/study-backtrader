@@ -70,7 +70,6 @@ def test_one_stock(stock_id):
   elif time_frame == 'm':
     cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
 
-  start_value = cerebro.broker.getvalue()
   result = cerebro.run()
   return result[0].trades, result[0].buy_last_bar
 
