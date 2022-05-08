@@ -24,6 +24,7 @@ class BaseStrategy(bt.Strategy):
     # the current trade's buy and sell reason
     self.buy_reason = None
     self.sell_reason = None
+    self.buy_price = 0
 
 
   def notify_order(self, order):
@@ -35,6 +36,7 @@ class BaseStrategy(bt.Strategy):
     # Attention: broker could reject order if not enough cash
     if order.status in [order.Completed]:
       if order.isbuy():
+        self.buy_price = order.executed.price
         # self.log(f'BUY EXECUTED, Price: {order.executed.price}')
         pass
       else:  # Sell

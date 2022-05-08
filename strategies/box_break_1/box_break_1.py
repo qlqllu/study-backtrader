@@ -3,12 +3,12 @@ from strategies.base_strategy import BaseStrategy
 
 class Strategy(BaseStrategy):
   params = (
-    ('box_h', 0.20),
+    ('box_os', 0.20),
     ('box_p', 60),
   )
 
   def __init__(self):
-    BaseStrategy.__init__(self)
+    super().__init__()
     self.sl = 0
     self.box_high = 0
     self.box_low = 0
@@ -24,7 +24,7 @@ class Strategy(BaseStrategy):
     self.box_low = 0
 
     self.dt = d.datetime.date(0).isoformat()
-    box_h = self.params.box_h
+    box_os = self.params.box_os
     box_p = self.params.box_p
 
     if not self.position:
@@ -35,7 +35,7 @@ class Strategy(BaseStrategy):
 
       box_max = max(d.high.get(ago=-1, size=box_p))
       box_min = min(d.low.get(ago=-1, size=box_p))
-      if box_max <= box_min * (1 + box_h) and d.close[0] > box_max:
+      if box_max <= box_min * (1 + box_os) and d.close[0] > box_max:
         self.buy()
         self.sl = box_min
         self.box_high = box_max
