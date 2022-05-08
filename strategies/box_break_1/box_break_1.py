@@ -3,7 +3,7 @@ from strategies.base_strategy import BaseStrategy
 
 class Strategy(BaseStrategy):
   params = (
-    ('box_h', 0.10),
+    ('box_h', 0.20),
     ('box_p', 10),
   )
 

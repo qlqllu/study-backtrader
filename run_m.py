@@ -1,6 +1,6 @@
 import datetime
 import backtrader as bt
-from matplotlib.pyplot import subplot
+from matplotlib.pyplot import draw, subplot
 import importlib
 import pathlib
 import argparse
@@ -75,7 +75,10 @@ def test_one_stock(stock_id):
 
 if __name__ == '__main__':
   files = os.listdir(f'{data_folder}')
-  result = dict(id=[], profit=[], profit_percent=[], days=[], profit_p_per_day=[], stock_id=[], sell_reason=[])
+
+  trade_result = dict(id=[], profit=[], profit_percent=[], bars=[], profit_percent_per_bar=[], stock_id=[], sell_reason=[])
+  continue_drawdown_len = [] # {stock_id, len}
+
   buy_last_bars = []
   i = 0
   stock_count = 0
@@ -100,16 +103,29 @@ if __name__ == '__main__':
     if buy_last_bar:
       buy_last_bars.append(stock_id)
 
+    is_drawdown = False
+    drawdown_len = 0
     for t in trades:
-      result['id'].append(f'{stock_id}-{t.ref}')
-      result['profit'].append(round(t.pnlcomm, 2))
-      result['profit_percent'].append(round(t.profit_percent, 2))
-      result['days'].append(t.barlen if t.barlen > 0 else 1)
-      result['profit_p_per_day'].append(round(t.profit_percent/(t.barlen if t.barlen > 0 else 1), 2))
-      result['stock_id'].append(stock_id)
-      result['sell_reason'].append(t.sell_reason)
+      trade_result['id'].append(f'{stock_id}-{t.ref}')
+      trade_result['profit'].append(round(t.pnlcomm, 2))
+      trade_result['profit_percent'].append(round(t.profit_percent, 2))
+      trade_result['bars'].append(t.barlen if t.barlen > 0 else 1)
+      trade_result['profit_percent_per_bar'].append(round(t.profit_percent/(t.barlen if t.barlen > 0 else 1), 2))
+      trade_result['stock_id'].append(stock_id)
+      trade_result['sell_reason'].append(t.sell_reason)
 
-  resultData = pd.DataFrame(result)
+      if t.profit_percent < 0:
+        if is_drawdown:
+          drawdown_len += 1
+        else:
+          is_drawdown = True
+          drawdown_len = 1
+      else:
+        if is_drawdown:
+          continue_drawdown_len.append({'stock_id': stock_id, 'len': drawdown_len})
+          drawdown_len = 0
+
+  resultData = pd.DataFrame(trade_result)
 
   print('------------------')
   if len(buy_last_bars) > 0:
@@ -127,23 +143,32 @@ if __name__ == '__main__':
   earn_loss_rate = round(earn_trade_count / (earn_trade_count + loss_trade_count) * 100, 2)
   print(f'{stock_count} stocks, {trade_count} trades. {earn_trade_count} earns, {loss_trade_count} losses, {earn_loss_rate}% Eean/Loss')
 
-  profit_sum = round(np.sum(resultData['profit_percent']), 2)
+  profit_percent_sum = round(np.sum(resultData['profit_percent']), 2)
   max_earn = np.max(resultData['profit_percent'])
   max_loss = np.min(resultData['profit_percent'])
-  print(f'Total profit%: {profit_sum}, max_earn%: {max_earn}, max_loss%: {max_loss}')
+  print(f'Total profit%: {profit_percent_sum}, max_earn%: {max_earn}, max_loss%: {max_loss}')
 
-  total_cache_use = np.sum(resultData['days'])
-  profit_per_day = round(profit_sum/total_cache_use, 2)
-  print(f'Profit per day%: {profit_per_day}')
+  total_cache_use = np.sum(resultData['bars'])
+  profit_per_bar = round(profit_percent_sum/total_cache_use, 2)
+  print(f'Profit percent per bar%: {profit_per_bar}')
 
-  profit_p_per_day = round(np.average(resultData['profit_p_per_day']), 2)
-  print(f'profit_per_day_avg%: {profit_p_per_day}')
-
-  profit_per_trade = round(profit_sum/trade_count, 2)
+  profit_per_trade = round(profit_percent_sum/trade_count, 2)
   earn_per_trade = round(np.average(np.extract(resultData['profit_percent'] > 0, resultData['profit_percent'])), 2)
   loss_per_trade = round(np.average(np.extract(resultData['profit_percent'] < 0, resultData['profit_percent'])), 2)
   print(f'Profit per trade%: {profit_per_trade}, Earn per trade%: {earn_per_trade}, Loss per trade%:{loss_per_trade}')
 
+  if len(continue_drawdown_len) > 0:
+    max_drawdown_len = 0
+    max_drawdown_stock_id = None
+    for dd in continue_drawdown_len:
+      if dd['len'] > max_drawdown_len:
+        max_drawdown_len = dd['len']
+        max_drawdown_stock_id = dd['stock_id']
+
+    avg_drawdown_len = round(np.average(list(map(lambda dd: dd['len'], continue_drawdown_len))), 2)
+    print(f'Max drawdown len: {max_drawdown_len} on stock {max_drawdown_stock_id}, avg drawdown len: {avg_drawdown_len}')
+  else:
+    print('No continue drawdown.')
   # s1_sell = len(np.extract(resultData['sell_reason'] == 'S1', resultData['sell_reason']))
   # s2_sell = len(np.extract(resultData['sell_reason'] == 'S2', resultData['sell_reason']))
   # sl_sell = len(np.extract(resultData['sell_reason'] == 'SL', resultData['sell_reason']))
