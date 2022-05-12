@@ -80,4 +80,4 @@ if __name__ == '__main__':
   # 策略执行后的资金
   print(f'Final Value: {round(cerebro.broker.getvalue(), 2)}, percent%: {round(sum_p, 2)}')
 
-  cerebro.plot(style='candle', barup='red', barupfill=False, bardown='green', plotdist=1, volume=True)
+  cerebro.plot(style='candle', barup='red', barupfill=False, bardown='green', plotdist=1, volume=False)
