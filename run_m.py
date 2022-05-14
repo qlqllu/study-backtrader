@@ -50,7 +50,7 @@ if __name__ == '__main__':
   files = os.listdir(f'{data_folder}')
 
   stock_list = list(map(lambda file: file.split('.')[0], files))
-  end_index = end_index if end_index > 0 else len(stock_list)
+  end_index = end_index if end_index else len(stock_list)
   stock_list = stock_list[start_index:end_index]
   trade_result, continue_drawdown_len, buy_last_bars = test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame, last_bar)
 

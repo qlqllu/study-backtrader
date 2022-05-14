@@ -1,0 +1,21 @@
+box break 1: box_p:140, box_os: 0.2, 2010-01-01~now
+  ------------------Trade stats-------------
+  4791 stocks, 751 trades. 298 earns, 452 losses, 39.73% Eean.
+  Total profit%: 10553.8, max_earn%: 297.7, max_loss%: -31.48
+  Profit per bar%: 0.18, Profit per year%: 45.0
+  Profit per trade%: 14.05, Earn per trade%: 49.74, Loss per trade%:-9.44
+  Max drawdown len: 3 on stock sh601166, avg drawdown len: 1.07
+  ---- Distribution:
+  Profit distribution: [-12.36, -9.99, -8.44, -7.45, -6.28, -0.64, 10.73, 31.73, 62.91, 297.7]
+  Top stocks:      stock_id  profit_percent
+65   sh600226          297.70
+309  sz000027          288.87
+132  sh600635          277.12
+497  sz002761          266.44
+436  sz002233          251.35
+  Bottom stocks:      stock_id  profit_percent
+230  sh601229          -30.09
+364  sz000726          -30.39
+440  sz002254          -31.40
+444  sz002277          -31.48
+123  sh600567          -33.38

@@ -14,11 +14,13 @@ if not data_folder.exists():
   print(f'Data folder not exist.{data_folder}')
   exit()
 
-def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, log, observers):
+def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, log, observers, **strategeParams):
   cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
   cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
-  cerebro.addstrategy(Strategy, log=log, last_bar=last_bar)
+  strategeParams['log'] = log
+  strategeParams['last_bar'] = last_bar
+  cerebro.addstrategy(Strategy, **strategeParams)
   if observers:
     for observer in observers:
       cerebro.addobserver(observer)
@@ -48,7 +50,7 @@ def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_ba
   result = cerebro.run()
   return result[0].trades, result[0].buy_last_bar, cerebro
 
-def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame, last_bar):
+def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame, last_bar, **strategeParams):
   trade_result = dict(id=[], profit=[], profit_percent=[], bars=[], profit_percent_per_bar=[], stock_id=[], sell_reason=[])
   continue_drawdown_len = [] # {stock_id, len}
   buy_last_bars = []
@@ -65,7 +67,7 @@ def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame,
     i += 1
     print(f'Test {i}, {stock_id}')
 
-    trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, None)
+    trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, None, **strategeParams)
 
     if buy_last_bar:
       buy_last_bars.append(stock_id)
@@ -101,7 +103,7 @@ def analyze_trade_result(trade_result, time_frame, continue_drawdown_len):
 
   if len(resultDf) == 0:
     print('No trade.')
-    return resultStats
+    return resultStats, resultDf
 
   resultStats.trade_count = len(resultDf['profit'])
   resultStats.earn_trade_count = len(np.extract(resultDf['profit'] > 0, resultDf['profit']))
