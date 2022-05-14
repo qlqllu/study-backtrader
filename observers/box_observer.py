@@ -1,7 +1,7 @@
 import backtrader as bt
 
 class BoxObserver(bt.Observer):
-  lines = ('high', 'low')
+  lines = ('high', 'low', 'moving_high', 'moving_low')
 
   plotinfo = dict(plot=True, subplot=False, plotlinelabels=True)
 
@@ -15,3 +15,7 @@ class BoxObserver(bt.Observer):
       else:
         self.lines.high[0] = self._owner.box_high
         self.lines.low[0] = self._owner.box_low
+
+    if self._owner.moving_box_high > 0:
+      self.lines.moving_high[0] = self._owner.moving_box_high
+      self.lines.moving_low[0] = self._owner.moving_box_low

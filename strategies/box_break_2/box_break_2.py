@@ -1,6 +1,5 @@
 import backtrader as bt
 from strategies.base_strategy import BaseStrategy
-from indicators.high_price_indicator import HighPriceIndicator
 
 class Strategy(BaseStrategy):
   params = (
@@ -10,7 +9,11 @@ class Strategy(BaseStrategy):
   def __init__(self):
     super().__init__()
     self.sl = 0
-    self.high_price = HighPriceIndicator(self.data, subplot=False, period=self.params.box_p)
+    self.box_high = 0
+    self.box_low = 0
+    self.moving_box_high = 0
+    self.moving_box_low = 0
+    self.is_rising = False
 
   def next(self):
     d = self.data
@@ -18,19 +21,48 @@ class Strategy(BaseStrategy):
     if not self.should_continue_next():
       return
 
+    self.box_high = 0
+    self.box_low = 0
+
+    self.dt = d.datetime.date(0).isoformat()
+    box_p = self.params.box_p
+
     if not self.position:
-      if d.close[0] > self.high_price[-1] * 1.01 and d.close[0] > d.open[0]:
-        self.buy()
-        self.sl = d.open[-1]
-    else:
-      if d.low[0] < self.sl:
-        self.sell()
-        self.sl = 0
+      self.sl = 0
+
+      if len(d.close.get(ago=-1, size=box_p)) < box_p:
         return
 
+      box_max = max(d.high.get(ago=-1, size=box_p))
+      box_min = min(d.low.get(ago=-1, size=box_p))
+      box_os = (box_max - box_min) / box_min
+      if d.close[0] > box_max:
+        self.buy()
+        self.sl = box_min * (1 + box_os * 0.5)
+        self.box_high = box_max
+        self.box_low = box_min
+        self.moving_box_high = box_max
+        self.moving_box_low = box_min
+
+        if self.p.last_bar:
+          self.buy_last_bar = True
+
+    else:
       # Move SL
-      if d.close[0] > self.sl * 1.05:
-        self.sl = self.sl * 1.05
+      box_os = (self.moving_box_high - self.moving_box_low) / self.moving_box_low
+      if d.low[0] > self.moving_box_high * (1 + box_os):
+        self.moving_box_high = self.moving_box_high * (1 + box_os)
+        self.moving_box_low = self.moving_box_low * (1 + box_os)
+        self.sl = self.moving_box_low * (1 + box_os * 0.5)
+
+      if d.low[0] < self.sl:
+        self.sell()
+        self.moving_box_high = 0
+        self.moving_box_low = 0
+        return
+
+
+
 
 
 
