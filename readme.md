@@ -1,2 +1,2 @@
 * Single run: `python run_s.py -t flzt1 -b 2020-01-01 -e 2022-01-01 -f w -m b -s sz002868`, the `-b, -e, -f, -m` are optional.
-* Batch run: `python run_m.py -t flzt1 -m b -b 2020-01-01 -e 2022-01-01 -f w -n 10 -r 1`, only `-t` is required.
+* Batch run: `python run_m.py -t flzt1 -m b -b 2020-01-01 -e 2022-01-01 -f w -i 0 -j 10 -r 1`, only `-t` is required.

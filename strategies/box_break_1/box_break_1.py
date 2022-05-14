@@ -4,7 +4,7 @@ from strategies.base_strategy import BaseStrategy
 class Strategy(BaseStrategy):
   params = (
     ('box_os', 0.30),
-    ('box_p', 120),
+    ('box_p', 60),
   )
 
   def __init__(self):

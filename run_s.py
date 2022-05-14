@@ -6,6 +6,7 @@ import pathlib
 import argparse
 from observers.sl_observer import SLObserver
 from observers.box_observer import BoxObserver
+from utils import test_one_stock, analyze_trade_result
 
 parser = argparse.ArgumentParser(prog = 'Strategy Runner', description = 'Run a strategy for back testing.')
 parser.add_argument('-t', '--strategy', type=str, required=True)
@@ -38,37 +39,9 @@ if not stock_path.exists():
 Strategy = importlib.import_module(f'strategies.{strategy_name}.{strategy_name}').Strategy
 
 if __name__ == '__main__':
-  cerebro = bt.Cerebro(preload=True)
-  cerebro.broker.setcash(10000.0)
-  cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
-  strats = cerebro.addstrategy(Strategy, log=True, last_bar=last_bar)
-  cerebro.addobserver(SLObserver)
-  cerebro.addobserver(BoxObserver)
 
-  data = bt.feeds.GenericCSVData(
-      dataname=stock_path,
-      datetime=0,
-      open=1,
-      high=2,
-      low=3,
-      close=4,
-      volume=5,
-      dtformat=('%Y-%m-%d'),
-      fromdate=begin_date,
-      todate=end_date,
-  )
-  if time_frame == 'd':
-    cerebro.adddata(data)
-  elif time_frame == 'w':
-    cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
-  elif time_frame == 'm':
-    cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
+  trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, True, [SLObserver, BoxObserver])
 
-  # 策略执行前的资金
-  print('Starting Value: %.2f' % cerebro.broker.getvalue())
-  result = cerebro.run()
-
-  trades = result[0].trades
   sum_p = 0
   for t in trades:
     if not t.open_trade:
@@ -76,8 +49,6 @@ if __name__ == '__main__':
       continue
 
     sum_p += t.profit_percent
-
-  # 策略执行后的资金
-  print(f'Final Value: {round(cerebro.broker.getvalue(), 2)}, percent%: {round(sum_p, 2)}')
+  print(f'Total percent%: {round(sum_p, 2)}')
 
   cerebro.plot(style='candle', barup='red', barupfill=False, bardown='green', plotdist=1, volume=False)
