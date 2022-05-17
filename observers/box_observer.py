@@ -16,6 +16,6 @@ class BoxObserver(bt.Observer):
         self.lines.high[0] = self._owner.box_high
         self.lines.low[0] = self._owner.box_low
 
-    if self._owner.moving_box_high > 0:
+    if hasattr(self._owner, 'moving_box_high') and self._owner.moving_box_high > 0:
       self.lines.moving_high[0] = self._owner.moving_box_high
       self.lines.moving_low[0] = self._owner.moving_box_low

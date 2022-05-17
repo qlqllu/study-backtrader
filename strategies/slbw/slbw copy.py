@@ -33,11 +33,7 @@ class Strategy(BaseStrategy):
           self.box_low = 0
           self.box_high = 0
         else:
-          if d.low[0] > self.box_high and len(self) < self.zt_index + 5:
-            self.zt_index = 0
-            self.box_low = 0
-            self.box_high = 0
-          elif d.close[0] > self.box_high and d.open[0] < self.box_high and len(self) >= self.zt_index + 5:
+          if self.box_high < d.close[0] < self.box_high * 1.1:
             self.buy()
             self.sl = self.box_low
             self.zt_index = 0
