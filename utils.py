@@ -39,13 +39,14 @@ def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_ba
       fromdate=begin_date,
       todate=end_date
   )
-
   if time_frame == 'd':
-    cerebro.adddata(data)
+    pass
   elif time_frame == 'w':
-    cerebro.resampledata(data, timeframe=bt.TimeFrame.Weeks)
+    data.resample(timeframe=bt.TimeFrame.Weeks)
   elif time_frame == 'm':
-    cerebro.resampledata(data, timeframe=bt.TimeFrame.Months)
+    data.resample(timeframe=bt.TimeFrame.Months)
+
+  cerebro.adddata(data)
 
   result = cerebro.run()
   return result[0].trades, result[0].buy_last_bar, cerebro

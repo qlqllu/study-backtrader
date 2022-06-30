@@ -12,12 +12,12 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "args": [
-        "-t", "trend_n",
-        "-s", "sh600433",
-        "-b", "2021-01-01",
+        "-t", "ma",
+        "-s", "sh603105",
+        "-b", "2020-01-01",
         // "-e", "2022-01-01",
-        "-f", "d",
-        "-m", "b"
+        "-f", "w",
+        "-m", "l"
       ]
     }, {
       "name": "Batch run",
@@ -27,9 +27,9 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "args": [
-        "-t", "box_break_1",
-        "-m", "b",
-        "-b", "2020-01-01",
+        "-t", "low",
+        "-m", "l",
+        "-b", "2021-01-01",
         "-f", "d",
         "-r", "1",
       ]
