@@ -12,12 +12,12 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "args": [
-        "-t", "ma",
+        "-t", "fall",
         "-s", "sh603105",
         "-b", "2020-01-01",
         // "-e", "2022-01-01",
-        "-f", "w",
-        "-m", "l"
+        "-f", "d",
+        "-m", "b"
       ]
     }, {
       "name": "Batch run",
