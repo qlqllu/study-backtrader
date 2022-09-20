@@ -4,9 +4,9 @@ from matplotlib.pyplot import subplot
 import importlib
 import pathlib
 import argparse
-from observers.sl_observer import SLObserver
-from observers.box_observer import BoxObserver
-from observers.trend_observer import TrendObserver
+# from observers.sl_observer import SLObserver
+# from observers.box_observer import BoxObserver
+# from observers.trend_observer import TrendObserver
 from utils import test_one_stock
 
 parser = argparse.ArgumentParser(prog = 'Strategy Runner', description = 'Run a strategy for back testing.')
@@ -41,7 +41,7 @@ Strategy = importlib.import_module(f'strategies.{strategy_name}.{strategy_name}'
 
 if __name__ == '__main__':
 
-  trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, True, [SLObserver, BoxObserver, TrendObserver])
+  trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, True)
 
   sum_p = 0
   for t in trades:

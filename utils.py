@@ -7,6 +7,7 @@ import argparse
 import os
 import numpy as np
 import pandas as pd
+from observers.observer import MyObserver
 
 root_path = pathlib.PurePath(__file__).parent
 data_folder = pathlib.Path(root_path, f'data_ln/zh_a')
@@ -14,16 +15,14 @@ if not data_folder.exists():
   print(f'Data folder not exist.{data_folder}')
   exit()
 
-def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, log, observers, **strategeParams):
+def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, log, **strategeParams):
   cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
   cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
   strategeParams['log'] = log
   strategeParams['last_bar'] = last_bar
   cerebro.addstrategy(Strategy, **strategeParams)
-  if observers:
-    for observer in observers:
-      cerebro.addobserver(observer)
+  cerebro.addobserver(MyObserver, plot=True, subplot=Strategy.observer_subplot, plotlinelabels=True)
 
   stock_path = pathlib.Path(data_folder, f'{stock_id}.csv')
 

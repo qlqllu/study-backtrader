@@ -3,21 +3,29 @@ from strategies.base_strategy import BaseStrategy
 import numpy as np
 from sklearn import linear_model
 import pandas as pd
+from indicators.fall_indicator import FallIndicator
 
 reg = linear_model.LinearRegression()
 
 class Strategy(BaseStrategy):
   params = (
+    ('fall_period', 10),
+    ('fall_k', 0),
+    ('os_period', 10),
   )
+
+  observer_subplot = False
 
   def __init__(self):
     super().__init__()
-    min, max = np.min(self.data.close), np.max(self.data.close)
-    self.df = pd.DataFrame({'price_normal': (self.data.close.array - min) / (max - min)})
-    # self.data['price_normal'] = (self.data.close - min) / (max - min)
-    self.sl = 0
-    self.s = 0
-    self.is_falling = False
+    self.ob_sl = 0
+    self.ob_box_high = 0
+    self.ob_box_low = 0
+
+    self.fall = FallIndicator(self.data, period=self.p.fall_period, k=self.p.fall_k)
+    self.fall_done_index = 0
+    self.fall_done_price_index = 0
+    self.is_os_ok = False
 
   def next(self):
     d = self.data
@@ -27,49 +35,31 @@ class Strategy(BaseStrategy):
       return
 
     if not self.position:
-      if self.check_is_falling():
-        self.is_falling = True
-      else:
-        if self.is_falling:
-          self.buy()
-          self.sl = d.low[-1]
-          self.is_falling = False
+      if not self.fall.falling[0] and self.fall.falling[-1]:
+        self.fall_done_index = len(self)
+        self.fall_done_price_index = len(self)
+
+      if self.fall_done_index > 0 and len(self) >= self.fall_done_index + self.p.os_period:
+        self.fall_done_index = 0
+
+        self.ob_box_high = max(d.high.get(self.p.os_period))
+        self.ob_box_low = min(d.low.get(self.p.os_period))
+        if self.ob_box_high <= d.high[self.fall_done_price_index - len(self)] * 1.1 and self.ob_box_low > d.low[self.fall_done_price_index - len(self)] * 0.9:
+          self.is_os_ok = True
+
+      if self.is_os_ok and d.close[0] > d.close[self.fall_done_price_index - len(self)]:
+        self.buy()
+        self.ob_sl = d.low[-1]
+        self.is_falling = False
     else:
-      if d.close[0] < self.sl:
+      if d.close[0] < self.ob_sl:
         self.sell()
-        self.sl = 0
+        self.ob_sl = 0
         self.s = len(self)
         return
 
-      if d.close[0] > self.sl * 1.05:
-        self.sl = self.sl * 1.05
-
-  def check_is_falling(self):
-    s = self.s
-    e = len(self)
-    p = e - s
-    if p < 10:
-      return False
-
-    if not self.is_falling:
-      self.s = self.s + 1
-
-    data = self.df.iloc[s: e]
-
-    train_X = np.array(range(p))
-    train_Y = np.array(data.price_normal)
-    reg.fit(train_X.reshape(-1, 1), train_Y)
-    predict_Y = reg.predict(train_X.reshape(-1, 1))
-
-    k = reg.coef_[0]
-    model = f'model:{k}x+{reg.intercept_}'
-    score = reg.score(train_X.reshape(-1, 1), train_Y)
-
-    if k >= 0:
-      return False
-
-    if score > 0.9:
-      return True
+      if d.close[0] > self.ob_sl * 1.05:
+        self.ob_sl = self.ob_sl * 1.05
 
 
 
