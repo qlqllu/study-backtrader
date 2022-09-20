@@ -10,8 +10,8 @@ reg = linear_model.LinearRegression()
 class Strategy(BaseStrategy):
   params = (
     ('fall_period', 10),
-    ('fall_k', 0),
-    ('os_period', 10),
+    ('fall_k', -0.03),
+    ('os_period', 3),
   )
 
   observer_subplot = False
@@ -24,7 +24,6 @@ class Strategy(BaseStrategy):
 
     self.fall = FallIndicator(self.data, period=self.p.fall_period, k=self.p.fall_k)
     self.fall_done_index = 0
-    self.fall_done_price_index = 0
     self.is_os_ok = False
 
   def next(self):
@@ -37,20 +36,43 @@ class Strategy(BaseStrategy):
     if not self.position:
       if not self.fall.falling[0] and self.fall.falling[-1]:
         self.fall_done_index = len(self)
-        self.fall_done_price_index = len(self)
+        self.ob_box_high = d.high[0] * 1.03
+        self.ob_box_low = d.low[0] * 0.97
+        self.log(f'Fall done. {self.dt}')
 
       if self.fall_done_index > 0 and len(self) >= self.fall_done_index + self.p.os_period:
         self.fall_done_index = 0
 
-        self.ob_box_high = max(d.high.get(self.p.os_period))
-        self.ob_box_low = min(d.low.get(self.p.os_period))
-        if self.ob_box_high <= d.high[self.fall_done_price_index - len(self)] * 1.1 and self.ob_box_low > d.low[self.fall_done_price_index - len(self)] * 0.9:
-          self.is_os_ok = True
+        p_high = max(d.high.get(self.p.os_period))
+        p_low = min(d.low.get(self.p.os_period))
 
-      if self.is_os_ok and d.close[0] > d.close[self.fall_done_price_index - len(self)]:
-        self.buy()
-        self.ob_sl = d.low[-1]
-        self.is_falling = False
+        if p_high <= self.ob_box_high and p_low >= self.ob_box_low:
+          self.is_os_ok = True
+          self.log(f'Box ok. {self.dt}')
+        else:
+          self.fall_done_index = 0
+          self.ob_box_high = 0
+          self.ob_box_low = 0
+          self.log(f'No box. {self.dt}')
+
+      if self.is_os_ok:
+        if d.close[0] < self.ob_box_low:
+          self.ob_box_high = 0
+          self.ob_box_low = 0
+          self.is_falling = False
+          self.is_os_ok = False
+          self.log(f'Fall down box. {self.dt}')
+          return
+
+        if d.close[0] > self.ob_box_high:
+          self.buy()
+          self.ob_sl = d.low[-1]
+
+          self.ob_box_high = 0
+          self.ob_box_low = 0
+          self.is_falling = False
+          self.is_os_ok = False
+          self.log(f'Buy. {self.dt}')
     else:
       if d.close[0] < self.ob_sl:
         self.sell()

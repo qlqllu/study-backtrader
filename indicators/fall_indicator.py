@@ -14,13 +14,6 @@ class FallIndicator(bt.Indicator):
       ('k', 0)
     )
 
-    # plotinfo = dict(subplot=False)
-
-    # plotlines = dict(
-    #   falling=dict(subplot=True),
-    #   price=dict(subplot=False),
-    # )
-
     def __init__(self):
       self.addminperiod(self.p.period)
 
@@ -63,9 +56,10 @@ class FallIndicator(bt.Indicator):
         self.is_falling = False
       else:
         self.is_falling = True
+        # print(f'k: {k}')
         for i, v in enumerate(predict_Y):
-          self.lines.price[0 - (p - i)] = v
-          self.lines.falling[0 - (p - i)] = self.is_falling
+          self.lines.price[0 - (p - i - 1)] = v
+          self.lines.falling[0 - (p - i - 1)] = self.is_falling
 
 
       # p_data = self.data.high.get(size=self.p.period)
