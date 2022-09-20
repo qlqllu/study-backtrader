@@ -9,8 +9,8 @@ reg = linear_model.LinearRegression()
 
 class Strategy(BaseStrategy):
   params = (
-    ('fall_period', 10),
-    ('fall_k', -0.03),
+    ('fall_period', 5),
+    ('fall_k', -0.01),
     ('os_period', 3),
   )
 
@@ -37,16 +37,20 @@ class Strategy(BaseStrategy):
       if not self.fall.falling[0] and self.fall.falling[-1]:
         self.fall_done_index = len(self)
         self.ob_box_high = d.high[0] * 1.03
-        self.ob_box_low = d.low[0] * 0.97
+        self.ob_box_low = min(d.low.get(size=self.p.fall_period)) if len(d.low.get(size=self.p.fall_period)) > 0 else d.low[0]
         self.log(f'Fall done. {self.dt}')
 
       if self.fall_done_index > 0 and len(self) >= self.fall_done_index + self.p.os_period:
         self.fall_done_index = 0
 
-        p_high = max(d.high.get(self.p.os_period))
-        p_low = min(d.low.get(self.p.os_period))
+        # if len(d.high.get(self.p.os_period)) == 0:
+        #   self.log(f'No data. {self.dt}')
+        #   return
 
-        if p_high <= self.ob_box_high and p_low >= self.ob_box_low:
+        p_high = max(d.high.get(ago=-1, size=self.p.os_period))
+        p_low = min(d.low.get(ago=-1, size=self.p.os_period))
+
+        if p_low >= self.ob_box_low:
           self.is_os_ok = True
           self.log(f'Box ok. {self.dt}')
         else:

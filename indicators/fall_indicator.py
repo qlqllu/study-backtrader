@@ -46,7 +46,7 @@ class FallIndicator(bt.Indicator):
       model = f'model:{k}x+{reg.intercept_}'
       score = reg.score(train_X.reshape(-1, 1), train_Y)
 
-      if score < 0.9 or k > self.p.k: # not falling
+      if score < 0.8 or k > self.p.k: # not falling
         if self.is_falling:
           self.s = self.s + p
         else:
@@ -60,12 +60,3 @@ class FallIndicator(bt.Indicator):
         for i, v in enumerate(predict_Y):
           self.lines.price[0 - (p - i - 1)] = v
           self.lines.falling[0 - (p - i - 1)] = self.is_falling
-
-
-      # p_data = self.data.high.get(size=self.p.period)
-
-      # highest = max(p_data)
-      # lowest = min(p_data)
-      # if highest <= lowest * (1 + self.p.oscillation):
-      #   self.lines.high[0] = highest
-      #   self.lines.low[0] = lowest
