@@ -39,20 +39,21 @@ class Strategy(BaseStrategy):
         d.close[0] > d.open[0] and d.close[0] > d.close[-1]:
           self.buy()
           self.ob_sl = d.low[0]
+          self.cross_up_price = 0
     else:
       if d.close[0] < self.ma2[0]:
         self.sell()
         self.ob_sl = 0
         return
 
-      if d.close[0] > self.buy_price * 1.5:
+      if d.close[0] > self.buy_price * 1.2:
         if d.close[0] < self.ob_sl:
           self.sell()
           self.ob_sl = 0
           return
 
       if d.close[0] > self.ob_sl * 1.1:
-        self.ob_sl = self.ob_sl * 1.1
+        self.ob_sl = self.ob_sl * 1.05
 
   def check_direction(self, line):
     if line[0] > line[-1] > line[-2] > line[-3]:
