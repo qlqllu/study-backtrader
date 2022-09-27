@@ -9,9 +9,9 @@ reg = linear_model.LinearRegression()
 
 class Strategy(BaseStrategy):
   params = (
-    ('fall_period', 5),
+    ('fall_period', 20),
     ('fall_k', -0.01),
-    ('os_period', 3),
+    ('os_period', 5),
   )
 
   observer_subplot = False
@@ -50,7 +50,7 @@ class Strategy(BaseStrategy):
         p_high = max(d.high.get(ago=-1, size=self.p.os_period))
         p_low = min(d.low.get(ago=-1, size=self.p.os_period))
 
-        if p_low >= self.ob_box_low:
+        if p_high >= self.ob_box_high:
           self.is_os_ok = True
           self.log(f'Box ok. {self.dt}')
         else:

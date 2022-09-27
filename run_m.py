@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
   resultStats, resultDf = analyze_trade_result(trade_result, time_frame, continue_drawdown_len)
 
-  resultStats.stock_count = len(stock_list)
+  resultStats.stock_count = len(test_stocks)
   if len(buy_last_bars) > 0:
     print(f'Find stocks: {buy_last_bars}')
     exit()
