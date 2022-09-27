@@ -17,9 +17,9 @@ class FallIndicator(bt.Indicator):
     def __init__(self):
       self.addminperiod(self.p.period)
 
-      price = np.array(self.data.open + self.data.close + self.data.high + self.data.low)/4
-      min, max = np.min(price), np.max(price)
-      self.df = pd.DataFrame({'price_normal': (price - min) / (max - min)})
+      # price = np.array(self.data.open + self.data.close + self.data.high + self.data.low)/4
+      min, max = np.min(self.data.close), np.max(self.data.close)
+      self.df = pd.DataFrame({'price_normal': (self.data.close.array - min) / (max - min)})
 
       self.s = 0
       self.is_falling = False

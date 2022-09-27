@@ -7,6 +7,8 @@ class Strategy(BaseStrategy):
     ('box_p', 140),
   )
 
+  observer_subplot = False
+
   def __init__(self):
     super().__init__()
     self.sl = 0
