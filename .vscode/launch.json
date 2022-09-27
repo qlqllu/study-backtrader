@@ -12,11 +12,11 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "args": [
-        "-t", "fall",
-        "-s", "sh600060",
-        "-b", "2020-01-01",
+        "-t", "ma",
+        "-s", "sh600010",
+        "-b", "2010-01-01",
         // "-e", "2022-01-01",
-        "-f", "d",
+        "-f", "w",
         "-m", "b"
       ]
     }, {
