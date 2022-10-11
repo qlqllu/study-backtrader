@@ -80,7 +80,7 @@ if __name__ == '__main__':
     exit()
 
   # summary
-  print(f'''
+  summary = f'''
   ------------------Trade stats-------------
   {resultStats.stock_count} stocks, {resultStats.trade_count} trades. {resultStats.earn_trade_count} earns, {resultStats.loss_trade_count} losses, {resultStats.earn_percent}% Eean.
   Total profit%: {resultStats.total_profit_percent}, max_earn%: {resultStats.max_earn_percent}, max_loss%: {resultStats.max_loss_percent}
@@ -91,7 +91,12 @@ if __name__ == '__main__':
   Profit distribution: {resultStats.profit_distribution}
   Top stocks: {resultStats.top5_profit_stocks}
   Bottom stocks: {resultStats.bottom5_profit_stocks}
-  ''')
+  '''
+  print(summary)
 
   result_file = pathlib.Path(result_folder, f'{result_num}.csv')
   resultDf.to_csv(result_file)
+
+  summary_file = pathlib.Path(result_folder, f'{result_num}.txt')
+  fo = open(summary_file, "w")
+  fo.write(summary)
