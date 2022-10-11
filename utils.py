@@ -18,6 +18,7 @@ if not data_folder.exists():
 def test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, log, **strategeParams):
   cerebro = bt.Cerebro()
   cerebro.broker.setcash(10000.0)
+  cerebro.broker.setcommission(commission=0.003)
   cerebro.addsizer(bt.sizers.PercentSizer, percents=50)
   strategeParams['log'] = log
   strategeParams['last_bar'] = last_bar
