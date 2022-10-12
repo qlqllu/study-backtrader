@@ -59,7 +59,7 @@ def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame,
   i = 0
   for stock_id in stock_list:
     i += 1
-    print(f'Test {i}, {stock_id}')
+    # print(f'Test {i}, {stock_id}')
 
     trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, **strategeParams)
 

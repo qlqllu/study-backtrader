@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 if __name__ == '__main__':
-  data = pd.read_csv('./results/box_break_1/opt.csv')
+  data = pd.read_csv('./results/ma1/opt-2.csv')
 
   data = data.sort_values(['profit_percent_per_year'], ascending=[False])
   print(data.loc[:, ['id', 'profit_percent_per_year']].head(20))
