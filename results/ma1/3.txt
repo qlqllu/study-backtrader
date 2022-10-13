@@ -1,0 +1,22 @@
+
+  ------------------Trade stats-------------
+  51 stocks, 213 trades. 55 earns, 158 losses, 25.82% Eean.
+  Total profit%: 3391.29, max_earn%: 372.01, max_loss%: -18.46
+  Profit per bar%: 0.89, Profit per year%: 44.5
+  Profit per trade%: 15.92, Earn per trade%: 81.75, Loss per trade%:-6.99
+  Max drawdown len: 5 on stock sh600015, avg drawdown len: 1.61
+  ---- Distribution:
+  Profit distribution: [-10.41, -9.16, -8.07, -6.5, -4.93, -3.73, -1.57, 22.81, 84.97, 372.01]
+  Top stocks:     stock_id  profit_percent
+15  sh600021          466.83
+31  sh600050          329.20
+42  sh600061          314.18
+8   sh600012          262.78
+14  sh600020          193.38
+  Bottom stocks:     stock_id  profit_percent
+22  sh600029          -28.76
+39  sh600058          -34.16
+45  sh600064          -35.88
+47  sh600067          -38.59
+19  sh600026          -45.41
+  

@@ -59,7 +59,7 @@ def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame,
   i = 0
   for stock_id in stock_list:
     i += 1
-    # print(f'Test {i}, {stock_id}')
+    print(f'Test {i}, {stock_id}')
 
     trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, **strategeParams)
 
@@ -144,6 +144,19 @@ def analyze_trade_result(trade_result, time_frame, continue_drawdown_len):
   resultStats.bottom5_profit_stocks = data_group.loc[:, ['stock_id', 'profit_percent']].tail(5)
 
   return resultStats, resultDf
+
+def get_test_stocks(stock_list, stock_num):
+  test_stocks = []
+  for i in range(0, len(stock_list)):
+    stock_id = stock_list[i]
+    if stock_id == '' or stock_id.startswith('sz3') or stock_id.startswith('bj4') or stock_id.startswith('bj8') or stock_id.startswith('qfq'):
+      continue
+    test_stocks.append(stock_id)
+
+    if len(test_stocks) > stock_num:
+      return test_stocks
+
+  return test_stocks
 
 class TradesStats:
   stock_count = 0

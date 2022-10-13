@@ -7,7 +7,7 @@ import argparse
 import os
 import numpy as np
 import pandas as pd
-from utils import test_multiple_stocks, analyze_trade_result
+from utils import test_multiple_stocks, analyze_trade_result, get_test_stocks
 
 strategy_name = 'ma1'
 begin_date = datetime.datetime(2000, 1, 1)
@@ -40,7 +40,8 @@ if __name__ == '__main__':
 
   stock_list = list(map(lambda file: file.split('.')[0], files))
   end_index = end_index if end_index > 0 else len(stock_list)
-  stock_list = stock_list[start_index:end_index]
+
+  test_stocks = get_test_stocks(stock_list, end_index - start_index - 1)
 
   opt_stats = dict(
     id=[], profit_percent_per_year=[], max_loss_percent=[], max_drawdown_len=[], avg_drawdown_len=[],
@@ -55,7 +56,7 @@ if __name__ == '__main__':
 
   def run(id):
     print(f'---Test param {strategeParams}')
-    trade_result, continue_drawdown_len, buy_last_bars = test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame, False, **strategeParams)
+    trade_result, continue_drawdown_len, buy_last_bars = test_multiple_stocks(test_stocks, Strategy, begin_date, end_date, time_frame, False, **strategeParams)
     resultStats, resultDf = analyze_trade_result(trade_result, time_frame, continue_drawdown_len)
 
     opt_stats['id'].append(id)

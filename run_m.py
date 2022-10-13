@@ -7,7 +7,7 @@ import argparse
 import os
 import numpy as np
 import pandas as pd
-from utils import test_multiple_stocks, analyze_trade_result
+from utils import test_multiple_stocks, analyze_trade_result, get_test_stocks
 
 parser = argparse.ArgumentParser(prog = 'Strategy Runner', description = 'Run a strategy for back testing.')
 parser.add_argument('-t', '--strategy', type=str, required=True)
@@ -52,19 +52,7 @@ if __name__ == '__main__':
   stock_list = list(map(lambda file: file.split('.')[0], files))
   end_index = end_index if end_index else len(stock_list)
 
-  stock_num = end_index - start_index
-  test_stocks = []
-  for i in range(0, len(stock_list)):
-    # start with 3: 创业板
-    # start with 8：新三板
-    # start with 4: 三板
-    stock_id = stock_list[i]
-    if stock_id == '' or stock_id.startswith('sz3') or stock_id.startswith('bj4') or stock_id.startswith('bj8') or stock_id.startswith('qfq'):
-      continue
-    test_stocks.append(stock_id)
-
-    if len(test_stocks) > stock_num:
-      break
+  test_stocks = get_test_stocks(stock_list, end_index - start_index - 1)
 
   trade_result, continue_drawdown_len, buy_last_bars = test_multiple_stocks(test_stocks, Strategy, begin_date, end_date, time_frame, last_bar)
 
