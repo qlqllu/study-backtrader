@@ -59,34 +59,37 @@ def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame,
   i = 0
   for stock_id in stock_list:
     i += 1
-    # print(f'Test {i}, {stock_id}')
+    print(f'Test {i}, {stock_id}')
 
-    trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, **strategeParams)
+    try:
+      trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, **strategeParams)
+    except:
+      print(f'...Error: {stock_id}')
+    else:
+      if buy_last_bar:
+        buy_last_bars.append(stock_id)
 
-    if buy_last_bar:
-      buy_last_bars.append(stock_id)
+      is_drawdown = False
+      drawdown_len = 0
+      for t in trades:
+        trade_result['id'].append(f'{stock_id}-{t.ref}')
+        trade_result['profit'].append(round(t.pnlcomm, 2))
+        trade_result['profit_percent'].append(round(t.profit_percent, 2))
+        trade_result['bars'].append(t.barlen if t.barlen > 0 else 1)
+        trade_result['profit_percent_per_bar'].append(round(t.profit_percent/(t.barlen if t.barlen > 0 else 1), 2))
+        trade_result['stock_id'].append(stock_id)
+        trade_result['sell_reason'].append(t.sell_reason)
 
-    is_drawdown = False
-    drawdown_len = 0
-    for t in trades:
-      trade_result['id'].append(f'{stock_id}-{t.ref}')
-      trade_result['profit'].append(round(t.pnlcomm, 2))
-      trade_result['profit_percent'].append(round(t.profit_percent, 2))
-      trade_result['bars'].append(t.barlen if t.barlen > 0 else 1)
-      trade_result['profit_percent_per_bar'].append(round(t.profit_percent/(t.barlen if t.barlen > 0 else 1), 2))
-      trade_result['stock_id'].append(stock_id)
-      trade_result['sell_reason'].append(t.sell_reason)
-
-      if t.profit_percent < 0:
-        if is_drawdown:
-          drawdown_len += 1
+        if t.profit_percent < 0:
+          if is_drawdown:
+            drawdown_len += 1
+          else:
+            is_drawdown = True
+            drawdown_len = 1
         else:
-          is_drawdown = True
-          drawdown_len = 1
-      else:
-        if is_drawdown:
-          continue_drawdown_len.append({'stock_id': stock_id, 'len': drawdown_len})
-          drawdown_len = 0
+          if is_drawdown:
+            continue_drawdown_len.append({'stock_id': stock_id, 'len': drawdown_len})
+            drawdown_len = 0
 
   return trade_result, continue_drawdown_len, buy_last_bars
 

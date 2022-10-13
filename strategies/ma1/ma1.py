@@ -33,6 +33,9 @@ class Strategy(BaseStrategy):
     d = self.data
     self.dt = d.datetime.date(0).isoformat()
 
+    if not self.should_continue_next():
+      return
+
     if self.data.close.buflen() < self.params.ma_period2:
       return
 
@@ -54,6 +57,9 @@ class Strategy(BaseStrategy):
           self.ob_sl = self.cross_up_price
           self.cross_up_price = 0
           self.buy_price = d.close[0]
+
+          if self.p.last_bar:
+            self.buy_last_bar = True
           return
 
       # if d.low[0] < self.ma2[0] < min(d.close[0], d.open[0]) * 0.99 and \
