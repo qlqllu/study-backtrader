@@ -9,8 +9,8 @@ class Strategy(BaseStrategy):
     ('ma_period2', 60),
     ('ma1_ma2_diff_percent', 0.01), # diff percent less then this number is considered cross
     ('cross_up_high_percent', 0.1), # we don't buy if the price is two high
-    ('start_move_sl_percent', 0.5), # we start to check SL only when the profit is enough
-    ('move_sl_percent', 0.01), # move SL per step
+    ('start_move_sl_percent', 0.6), # we start to check SL only when the profit is enough
+    ('move_sl_percent', 0.15), # move SL per step
   )
 
   observer_subplot = False
