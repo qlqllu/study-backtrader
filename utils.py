@@ -63,8 +63,8 @@ def test_multiple_stocks(stock_list, Strategy, begin_date, end_date, time_frame,
 
     try:
       trades, buy_last_bar, cerebro = test_one_stock(stock_id, Strategy, begin_date, end_date, time_frame, last_bar, False, **strategeParams)
-    except:
-      print(f'...Error: {stock_id}')
+    except Exception as e:
+      print(f'...Error: {stock_id}, {e}')
     else:
       if buy_last_bar:
         buy_last_bars.append(stock_id)
