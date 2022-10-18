@@ -6,6 +6,8 @@ class Strategy(BaseStrategy):
     ('n_p', 3),
   )
 
+  observer_subplot = True
+
   def __init__(self):
     super().__init__()
     self.sl = 0
